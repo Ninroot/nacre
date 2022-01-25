@@ -1,38 +1,50 @@
-# Node.js REPL Prototype
+# Nacre
 
-![](https://gc.gy/39485171.png)
-![](https://gc.gy/39485205.png)
-![](https://gc.gy/39485229.png)
-![](https://gc.gy/39485261.png)
-![](https://gc.gy/39508489.png)
-![](https://gc.gy/39485850.png)
+[![stability-alpha](https://img.shields.io/badge/stability-alpha-f4d03f.svg)](https://github.com/mkenney/software-guides/blob/master/STABILITY-BADGES.md#alpha)
 
-Goals:
+Nacre is an **object-oriented shell** whose motto is **intuitiveness**. 
 
-- Better debugging and interaction
-  - Language Server Protocol
-  - Runtime inspection
-  - Benchmarking
-- Pretty UI
-  - Highlight output *and* input
-  - autocomplete
-- Keep the code neat for future changes
+Nacre does not aim to make you learn another shell language but instead leverages the full potential of Javascript.
+Because every command returns JSON, you manipulate objects instead of parsing raw lines.
+
+We rather encourage experimenting rather than reading endless documentation. For example if you wish to know how to use
+`cd`, run it and explore using autocompletion.
+
+![example](https://user-images.githubusercontent.com/11426226/151414121-ea87e39d-ed7d-48aa-840c-22d1251c280a.png)
 
 ## Usage
 
 ### Install
 
-```sh
-$ npm install -g nodejs/repl
+You must have [NodeJS](https://nodejs.org/en/) installed on your system.
+
+```shell
+$ npm install -g nacre
 ```
 
-```sh
-$ node-prototype-repl
+```shell
+$ nacre
 ```
 
-If you want to use this REPL by default, you can point
-`NODE_REPL_EXTERNAL_MODULE` to the result of
-`which node-prototype-repl`!
+### Examples
+
+```js
+// returns an array of the files and directories of the working directory like:
+> ls();
+['README.md', 'package.json', 'src', 'test']
+
+// same but recursively
+> ls.recursive();
+['README.md', 'package.json', ['src/afile.js', 'src/another.js'], ['test/test.js']]
+
+// same but removing nested arrays
+> ls.recursive().flat();
+['README.md', 'package.json', 'src/afile.js', 'src/another.js', 'test/test.js']
+
+// we filter only js files
+> ls.recursive().flat().filter(e => e.endsWith('.js'))
+['src/afile.js', 'src/another.js', 'test/test.js']
+```
 
 ## Contributing
 
@@ -41,3 +53,55 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 ## License
 
 MIT. See [LICENSE](./LICENSE).
+
+## Roadmap
+Subject to change.
+
+### Alpha 0.0.1
+- [x] get a readline where we can move the cursor left/right --> nodejs/repl 
+- [x] calling basic js function such as console.log
+- [x] getting the result of the execution printed
+- [x] autocompletion of available function
+- [x] autocompletion of available property of object
+- [x] auto import of custom function such as ls
+- [x] implement basic `ls` builtin
+- [x] implement basic `cd` builtin
+- [x] implement basic `pwd` builtin --> use `process.cwd` or `cd('.')`
+- [x] implement basic `sh` builtin
+- [x] better builtins importation
+- [x] implement basic `npm` command acting as a binary which takes a json as input and outputs json
+
+### Backlog
+- [ ] distinguish the return of a value (json) from the stdout (frontend)
+- [ ] get closing braces, brackets, parentheses automatically
+- [ ] get closing braces automatically
+- [ ] implement basic `stat` builtin
+- [ ] implement basic `cat` builtin (?)
+- [ ] implement basic `copy` builtin
+- [ ] implement basic `mv` builtin
+- [ ] equivalent of cmd + shift + p to find an action in VSCode but to find a command (ctrl + f?)
+- [ ] implement basic `curl` (fetch ?)
+- [ ] implement basic `sudo` (?)
+- [ ] implement basic `ln` (?)
+- [ ] implement basic `which` (?)
+- [ ] implement basic `df`
+- [ ] implement basic `du`
+- [ ] implement basic `jobs`
+- [ ] implement basic `kill`
+- [ ] implement basic `npm` (?)
+- [ ] implement basic `history`
+- [ ] implement basic `bash` behaviours (auto completion). Maybe by opening a bash / zsh shell to get the command and returning it to json
+- [ ] implement basic `rm`
+- [ ] implement basic `touch`
+- [ ] implement basic `chmod` (permission)
+- [ ] implement basic `chown` (group)
+- [ ] implement basic `user`
+- [ ] implement basic `find` (?)
+- [ ] implement basic `grep` (?)
+- [ ] implement basic `systemd`
+- [ ] implement basic `mount`
+- [ ] implement basic `ping`
+- [ ] implement basic `yum`
+- [ ] implement basic `apt`
+- [ ] implement basic `dnf`
+- [ ] implement basic `git`

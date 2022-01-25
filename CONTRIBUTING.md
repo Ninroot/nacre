@@ -1,4 +1,4 @@
-# Contributing to Node.js
+# Contributing to Nacre
 
 The Node.js project has a
 [Code of Conduct](https://github.com/nodejs/admin/blob/master/CODE_OF_CONDUCT.md)

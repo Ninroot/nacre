@@ -360,8 +360,7 @@ async function start(wsUrl) {
   };
 
   process.stdout.write(`\
-Node.js ${process.versions.node} (V8 ${process.versions.v8})
-Prototype REPL - https://github.com/nodejs/repl
+Nacre (Node.js ${process.versions.node} - V8 ${process.versions.v8})
 `);
 
   rl.resume();
