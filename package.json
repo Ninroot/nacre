@@ -1,6 +1,6 @@
 {
   "name": "nacre",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Intuitive object-oriented shell",
   "main": "src/index.js",
   "license": "MIT",
