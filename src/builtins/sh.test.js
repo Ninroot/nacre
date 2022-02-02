@@ -1,5 +1,6 @@
 'use strict';
 
+const { describe, it } = require('mocha');
 const assert = require('assert/strict');
 
 const { sh } = require('./sh');
