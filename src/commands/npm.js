@@ -2,13 +2,13 @@
 
 const fetch = require('./fetch');
 
-exports.npm = {};
+const npm = {};
 
 /**
  * Install npm package
  * @param {string} packageName
  */
-exports.npm.install = (packageName) => fetch('npm.router.js', '/install', { packageName });
+npm.install = (packageName) => fetch('npm.router.js', '/install', { packageName });
 
 /**
  * Uninstall npm package
@@ -17,4 +17,6 @@ exports.npm.install = (packageName) => fetch('npm.router.js', '/install', { pack
  *   save: boolean
  * }}[options]
  */
-exports.npm.uninstall = (packageName, options) => fetch('npm.router.js', '/uninstall', { packageName, options });
+npm.uninstall = (packageName, options) => fetch('npm.router.js', '/uninstall', { packageName, options });
+
+exports.npm = npm;

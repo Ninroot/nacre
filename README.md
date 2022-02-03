@@ -71,11 +71,11 @@ Subject to change.
 - [x] better builtins importation
 - [x] implement basic `npm` command acting as a binary which takes a json as input and outputs json
 
-### Alpha 0.0.4
+### In progress (Main branch)
 - [x] implement basic `stat` builtin
+- [x] enable nacre to launch nacre script from file
 
 ### Backlog
-- [ ] run nacre script from file
 - [ ] distinguish the return of a value (json) from the stdout (frontend)
 - [ ] get closing braces, brackets, parentheses automatically
 - [ ] get closing braces automatically

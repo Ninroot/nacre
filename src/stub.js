@@ -5,9 +5,7 @@ const path = require('path');
 const inspector = require('inspector');
 const util = require('util');
 
-const builtins = require('./builtins');
-
-const { npm } = require('./commands/npm');
+require('./global');
 
 inspector.open(0, true);
 process.stderr.write(`__DEBUGGER_URL__ ${inspector.url()}`);
@@ -78,14 +76,6 @@ Object.defineProperty(globalThis, '_err', {
   enumerable: false,
   configurable: true,
 });
-
-// import builtins
-for (const builtinsName in builtins) {
-  global[builtinsName] = builtins[builtinsName];
-}
-
-// import commands
-global.npm = npm;
 
 process.on('uncaughtException', (e) => {
   process.stdout.write(`Uncaught ${util.inspect(e)}\n`);
