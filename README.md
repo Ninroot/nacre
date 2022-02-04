@@ -74,12 +74,12 @@ Subject to change.
 ### In progress (Main branch)
 - [x] implement basic `stat` builtin
 - [x] enable nacre to launch nacre script from file
+- [x] implement basic `mkdir` builtin
 
 ### Backlog
 - [ ] distinguish the return of a value (json) from the stdout (frontend)
 - [ ] get closing braces, brackets, parentheses automatically
 - [ ] get closing braces automatically
-- [ ] implement basic `mkdir` builtin
 - [ ] implement basic `cat` builtin (?)
 - [ ] implement basic `copy` builtin
 - [ ] implement basic `mv` builtin
