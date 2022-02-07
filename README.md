@@ -10,18 +10,26 @@ Because every command returns JSON, you manipulate objects instead of parsing ra
 We rather encourage experimenting rather than reading endless documentation. For example if you wish to know how to use
 `cd`, run it and explore using autocompletion.
 
+<img src="https://user-images.githubusercontent.com/11426226/152829546-8acdf310-d339-4f6e-ae1d-69154b97ac01.mp4"
+alt="demo" autoplay loop>
+
 ## Usage
 
 ### Install
 
-You must have [NodeJS](https://nodejs.org/en/) installed on your system.
-
+You must have [NodeJS](https://nodejs.org/en/) installed on your system. Once this is done, you can install nacre:
 ```shell
 $ npm install -g nacre
 ```
 
+To launch a nacre shell:
 ```shell
 $ nacre
+```
+
+You can also run a nacre script file (see [an example](./test/nacre-script.test.js)):
+```shell
+$ nacre myscript.js
 ```
 
 ### Examples
@@ -73,17 +81,18 @@ $ nacre
     owner: 'arnauddebec',
     group: 'staff'
   },
+  ...
 ```
 
 ## Available commands
 
-- ls
-- cd
-- sh
-- stat
-- pwd
-- mkdir
-- npm
+- `ls`
+- `cd`
+- `sh`
+- `stat`
+- `pwd`
+- `mkdir`
+- `npm`
 
 ## Contributing
 
@@ -109,11 +118,13 @@ Subject to change.
 - [x] better builtins importation
 - [x] implement basic `npm` command acting as a binary which takes a json as input and outputs json
 
-### In progress (Main branch)
+### Alpha 0.0.4
 - [x] implement basic `stat` builtin
 - [x] enable nacre to launch nacre script from file
 - [x] implement basic `mkdir` builtin
 - [x] implement basic `pwd` builtin
+
+### In progress (Main branch)
 
 ### Backlog
 - [ ] distinguish the return of a value (json) from the stdout (frontend)
