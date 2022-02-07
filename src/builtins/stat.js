@@ -1,6 +1,6 @@
 'use strict';
 
-const { statSync } = require('fs');
+const { lstatSync } = require('fs');
 const userid = require('userid');
 const nodePath = require('path');
 
@@ -30,7 +30,7 @@ function getType(fileStat) {
 }
 
 exports.stat = (path) => {
-  const ns = statSync(path);
+  const ns = lstatSync(path);
   return {
     name: nodePath.basename(path),
     type: getType(ns),
