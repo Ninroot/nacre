@@ -3,28 +3,20 @@
 const fs = require('fs');
 const path = require('path');
 
-const ls = (dirpath) => {
-  const p = dirpath || '.';
-
-  // test if file exists
-  fs.accessSync(p, fs.constants.F_OK);
-
-  let items;
-  try {
-    items = fs.readdirSync(p || '.');
-  } catch (e) {
-    items = p;
-  }
-  return items;
-};
+// design decision
+// when a filename is given to  ls, it will throw an error in order to:
+// distinguish a directory from a file within the directory (ex: foo vs foo/foo)
+const ls = (dirpath) => fs.readdirSync(dirpath || '.');
 ls.help = 'List directory';
 
 ls.recursive = (dirpath) => {
   const node = dirpath || '.';
   if (fs.lstatSync(node).isDirectory()) {
-    return ls(node)
+    const children = ls(node)
       .map((e) => path.join(node, e))
       .map((e) => ls.recursive(e));
+    children.push(node);
+    return children;
   }
   return node;
 };
