@@ -10,7 +10,7 @@
   },
   "scripts": {
     "lint": "eslint src",
-    "test": "mocha $(find src -name '*.test.js')"
+    "test": "mocha $(find test -name '*.test.js')"
   },
   "bin": {
     "nacre": "./src/index.js"

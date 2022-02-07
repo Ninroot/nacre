@@ -10,15 +10,20 @@ const ls = (dirpath) => fs.readdirSync(dirpath || '.');
 ls.help = 'List directory';
 
 ls.recursive = (dirpath) => {
-  const node = dirpath || '.';
-  if (fs.lstatSync(node).isDirectory()) {
-    const children = ls(node)
-      .map((e) => path.join(node, e))
-      .map((e) => ls.recursive(e));
-    children.push(node);
-    return children;
-  }
-  return node;
+  const walk = (dir) => {
+    let results = [];
+    const list = fs.readdirSync(dir);
+    list.forEach((file) => {
+      file = path.join(dir, file);
+      const stat = fs.lstatSync(file);
+      results.push(file);
+      if (stat && stat.isDirectory()) {
+        results = results.concat(walk(file));
+      }
+    });
+    return results;
+  };
+  return walk(dirpath || '.');
 };
 ls.recursive.help = 'List directory recursively';
 
