@@ -26,7 +26,7 @@ To launch a nacre shell:
 $ nacre
 ```
 
-You can also run a nacre script file (see [an example](./test/nacre-script.test.js)):
+You can also run a nacre script file (see [an example](./test/nacre-script.js)):
 ```shell
 $ nacre myscript.js
 ```
