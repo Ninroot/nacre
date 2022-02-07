@@ -10,8 +10,6 @@ Because every command returns JSON, you manipulate objects instead of parsing ra
 We rather encourage experimenting rather than reading endless documentation. For example if you wish to know how to use
 `cd`, run it and explore using autocompletion.
 
-![example](https://user-images.githubusercontent.com/11426226/151414121-ea87e39d-ed7d-48aa-840c-22d1251c280a.png)
-
 ## Usage
 
 ### Install
@@ -30,21 +28,62 @@ $ nacre
 
 ```js
 // returns an array of the files and directories of the working directory like:
-> ls();
-['README.md', 'package.json', 'src', 'test']
-
-// same but recursively
-> ls.recursive();
-['README.md', 'package.json', ['src/afile.js', 'src/another.js'], ['test/test.js']]
-
-// same but removing nested arrays
-> ls.recursive().flat();
-['README.md', 'package.json', 'src/afile.js', 'src/another.js', 'test/test.js']
-
-// we filter only js files
-> ls.recursive().flat().filter(e => e.endsWith('.js'))
-['src/afile.js', 'src/another.js', 'test/test.js']
+> ls()
+  [ 'basic', 'empty', 'recursive', 'recursive_simple' ]
+// returns an array of the files and directories of the working directory like:
+> ls.recursive()
+  [
+    'basic',
+    'basic/a',
+    'basic/b',
+    'empty',
+    'recursive',
+    'recursive/d1',
+    'recursive/d1/d11',
+    'recursive/d1/d11/f11',
+    'recursive/d1/d11/f12',
+    'recursive/d1/d12',
+    'recursive/d1/f1',
+    'recursive/d2',
+    'recursive/d2/f21',
+    'recursive/f1',
+    'recursive_simple',
+    'recursive_simple/d1',
+    'recursive_simple/d1/f1',
+    'recursive_simple/d1/f2'
+  ]
+// get status of each file 
+> ls.recursive().map(stat)
+  [
+  {
+    name: 'basic',
+    type: 'directory',
+    size: 128,
+    createdAt: 2022-02-07T11:16:23.285Z,
+    modifiedAt: 2022-02-07T11:16:39.576Z,
+    owner: 'arnauddebec',
+    group: 'staff'
+  },
+  {
+    name: 'a',
+      type: 'file',
+    size: 0,
+    createdAt: 2022-02-07T11:16:30.806Z,
+    modifiedAt: 2022-02-07T11:16:30.806Z,
+    owner: 'arnauddebec',
+    group: 'staff'
+  },
 ```
+
+## Available commands
+
+- ls
+- cd
+- sh
+- stat
+- pwd
+- mkdir
+- npm
 
 ## Contributing
 
@@ -66,7 +105,6 @@ Subject to change.
 - [x] auto import of custom function such as ls
 - [x] implement basic `ls` builtin
 - [x] implement basic `cd` builtin
-- [x] implement basic `pwd` builtin --> use `process.cwd` or `cd('.')`
 - [x] implement basic `sh` builtin
 - [x] better builtins importation
 - [x] implement basic `npm` command acting as a binary which takes a json as input and outputs json
@@ -75,6 +113,7 @@ Subject to change.
 - [x] implement basic `stat` builtin
 - [x] enable nacre to launch nacre script from file
 - [x] implement basic `mkdir` builtin
+- [x] implement basic `pwd` builtin
 
 ### Backlog
 - [ ] distinguish the return of a value (json) from the stdout (frontend)
