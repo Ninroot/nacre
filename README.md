@@ -10,8 +10,7 @@ Because every command returns JSON, you manipulate objects instead of parsing ra
 We rather encourage experimenting rather than reading endless documentation. For example if you wish to know how to use
 `cd`, run it and explore using autocompletion.
 
-<img src="https://user-images.githubusercontent.com/11426226/152829546-8acdf310-d339-4f6e-ae1d-69154b97ac01.mp4"
-alt="demo" autoplay loop>
+https://user-images.githubusercontent.com/11426226/152829546-8acdf310-d339-4f6e-ae1d-69154b97ac01.mp4
 
 ## Usage
 
