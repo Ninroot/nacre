@@ -13,6 +13,9 @@ describe('ls unit test', () => {
   it('should return a non empty array when no args', () => {
     assert.ok(ls().length > 1);
   });
+  it('should return the filename when a file as argument', () => {
+    assert.equal(ls(__filename), __filename);
+  });
   it('should return a non empty array when path provided', () => {
     assert.ok(ls('..').length > 1);
   });

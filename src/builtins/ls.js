@@ -3,7 +3,20 @@
 const fs = require('fs');
 const path = require('path');
 
-const ls = (dirpath) => fs.readdirSync(dirpath || '.');
+const ls = (dirpath) => {
+  const p = dirpath || '.';
+
+  // test if file exists
+  fs.accessSync(p, fs.constants.F_OK);
+
+  let items;
+  try {
+    items = fs.readdirSync(p || '.');
+  } catch (e) {
+    items = p;
+  }
+  return items;
+};
 ls.help = 'List directory';
 
 ls.recursive = (dirpath) => {
