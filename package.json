@@ -15,6 +15,11 @@
   "bin": {
     "nacre": "./src/index.js"
   },
+  "files": [
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Ninroot/nacre.git"
