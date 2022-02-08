@@ -92,6 +92,10 @@ $ nacre myscript.js
 - `pwd`
 - `mkdir`
 - `npm`
+``
+## Support
+
+[StackOverflow](https://stackoverflow.com/questions/tagged/nacre)
 
 ## Contributing
 
@@ -124,11 +128,10 @@ Subject to change.
 - [x] implement basic `pwd` builtin
 
 ### In progress (Main branch)
+- [x] get closing braces, brackets, parentheses, single quote, double quote & backtiks automatically when opening one
 
 ### Backlog
 - [ ] distinguish the return of a value (json) from the stdout (frontend)
-- [ ] get closing braces, brackets, parentheses automatically
-- [ ] get closing braces automatically
 - [ ] implement basic `cat` builtin (?)
 - [ ] implement basic `copy` builtin
 - [ ] implement basic `mv` builtin

@@ -267,6 +267,23 @@ async function start(wsUrl) {
   let completionCache;
   const ttyWrite = rl._ttyWrite.bind(rl);
   rl._ttyWrite = (d, key) => {
+    const pairs = {
+      '(': ')',
+      '[': ']',
+      '{': '}',
+      '"': '"',
+      '\'': '\'',
+      '`': '`',
+    };
+    if (Object.keys(pairs).includes(key.sequence)) {
+      rl._insertString(key.sequence);
+      const closing = pairs[key.sequence];
+      rl._insertString(closing);
+      rl.cursor -= 1;
+      rl._refreshLine();
+      return;
+    }
+
     if (!(key.ctrl && key.name === 'c')) {
       nextCtrlCKills = false;
     }
