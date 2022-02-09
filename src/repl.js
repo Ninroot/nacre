@@ -393,8 +393,10 @@ Nacre (Node.js ${process.versions.node} - V8 ${process.versions.v8})
       `function inspect(v) {
         globalThis.${uncaught ? '_err' : '_'} = v;
         return util.inspect(v, {
+          depth: 3,
           colors: true,
           showProxy: true,
+          maxArrayLength: Infinity,
         });
       }`,
       [result],
