@@ -6,7 +6,11 @@ const path = require('path');
 // design decision
 // when a filename is given to  ls, it will throw an error in order to:
 // distinguish a directory from a file within the directory (ex: foo vs foo/foo)
-const ls = (dirpath) => fs.readdirSync(dirpath || '.');
+const ls = (dirpath) => {
+  const p = dirpath || '.';
+  const items = fs.readdirSync(p);
+  return items.map((item) => path.join(p, item));
+};
 ls.help = 'List directory';
 
 ls.recursive = (dirpath) => {
