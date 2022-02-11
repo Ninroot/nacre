@@ -26,4 +26,4 @@ cd.home.help = 'Brings you in your home directory';
 cd.previous = () => cd(flip);
 cd.previous.help = 'Brings you back to your previous location';
 
-exports.cd = cd;
+module.exports = cd;

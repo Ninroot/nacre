@@ -15,4 +15,4 @@ mkdir.recursive = (dirpath) => {
   return path.normalize(dirpath);
 };
 
-exports.mkdir = mkdir;
+module.exports = mkdir;

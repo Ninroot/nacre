@@ -1,8 +1,9 @@
 'use strict';
 
-exports.cd = require('./cd').cd;
-exports.ls = require('./ls').ls;
-exports.sh = require('./sh').sh;
-exports.stat = require('./stat').stat;
-exports.mkdir = require('./mkdir').mkdir;
-exports.pwd = require('./pwd').pwd;
+exports.cd = require('./cd');
+exports.ls = require('./ls');
+exports.sh = require('./sh');
+exports.stat = require('./stat');
+exports.mkdir = require('./mkdir');
+exports.pwd = require('./pwd');
+exports.touch = require('./touch');

@@ -129,31 +129,30 @@ Subject to change.
 
 ### In progress (Main branch)
 - [x] get closing braces, brackets, parentheses, single quote, double quote & backtiks automatically when opening one
+- [x] implement basic `mv` builtin
 
 ### Backlog
-- [ ] distinguish the return of a value (json) from the stdout (frontend)
+- [ ] implement basic `rm`
+- [ ] implement basic `touch`
+- [ ] equivalent of cmd + shift + p to find an action in VSCode but to find a command (ctrl + f?)
+- [ ] implement basic `sudo` (?)
 - [ ] implement basic `cat` builtin (?)
 - [ ] implement basic `copy` builtin
-- [ ] implement basic `mv` builtin
-- [ ] equivalent of cmd + shift + p to find an action in VSCode but to find a command (ctrl + f?)
-- [ ] implement basic `curl` (fetch ?)
-- [ ] implement basic `sudo` (?)
-- [ ] implement basic `ln` (?)
+- [ ] distinguish the return of a value (json) from the stdout (frontend)
+- [ ] implement basic `chmod` (permission)
+- [ ] implement basic `chown` (group)
 - [ ] implement basic `which` (?)
+- [ ] implement basic `user`
+- [ ] implement basic `grep` (?)
+- [ ] implement basic `find` (?)
+- [ ] implement basic `history`
+- [ ] implement basic `curl` (fetch ?)
+- [ ] implement basic `ln` (?)
 - [ ] implement basic `df`
 - [ ] implement basic `du`
 - [ ] implement basic `jobs`
 - [ ] implement basic `kill`
-- [ ] implement basic `npm` (?)
-- [ ] implement basic `history`
 - [ ] implement basic `bash` behaviours (auto completion). Maybe by opening a bash / zsh shell to get the command and returning it to json
-- [ ] implement basic `rm`
-- [ ] implement basic `touch`
-- [ ] implement basic `chmod` (permission)
-- [ ] implement basic `chown` (group)
-- [ ] implement basic `user`
-- [ ] implement basic `find` (?)
-- [ ] implement basic `grep` (?)
 - [ ] implement basic `systemd`
 - [ ] implement basic `mount`
 - [ ] implement basic `ping`

@@ -31,4 +31,4 @@ ls.recursive = (dirpath) => {
 };
 ls.recursive.help = 'List directory recursively';
 
-exports.ls = ls;
+module.exports = ls;

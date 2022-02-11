@@ -29,7 +29,7 @@ function getType(fileStat) {
   return 'unknown';
 }
 
-exports.stat = (path) => {
+const stat = (path) => {
   const ns = lstatSync(path);
   return {
     name: nodePath.basename(path),
@@ -41,3 +41,5 @@ exports.stat = (path) => {
     group: userid.groupname(ns.gid),
   };
 };
+
+module.exports = stat;
