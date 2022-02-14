@@ -3,7 +3,7 @@
 const { describe, it } = require('mocha');
 const assert = require('assert/strict');
 
-const { cd } = require('../../src/builtins/cd');
+const cd = require('../../src/builtins/cd');
 
 describe('cd unit test', () => {
   it('should accept cd .', () => {

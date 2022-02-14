@@ -4,7 +4,7 @@ const { describe, it } = require('mocha');
 const path = require('path');
 const assert = require('assert/strict');
 
-const { stat } = require('../../src/builtins/stat');
+const stat = require('../../src/builtins/stat');
 
 describe('stat unit test', () => {
   it('should recognize a basic directory', () => {

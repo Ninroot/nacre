@@ -3,7 +3,7 @@
 const { describe, it } = require('mocha');
 const assert = require('assert/strict');
 
-const { sh } = require('../../src/builtins/sh');
+const sh = require('../../src/builtins/sh');
 
 describe('sh unit test', () => {
   it('should return string when ls', () => {

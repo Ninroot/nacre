@@ -4,8 +4,8 @@ const { describe, it, beforeEach } = require('mocha');
 const assert = require('assert/strict');
 const path = require('path');
 
-const { ls } = require('../../src/builtins/ls');
-const { cd } = require('../../src/builtins/cd');
+const ls = require('../../src/builtins/ls');
+const cd = require('../../src/builtins/cd');
 
 describe('ls unit test', () => {
   beforeEach('move to current dir', () => {
