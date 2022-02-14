@@ -108,7 +108,7 @@ MIT. See [LICENSE](./LICENSE).
 ## Roadmap
 Subject to change.
 
-### Alpha 0.0.3
+### Alpha
 - [x] get a readline where we can move the cursor left/right --> nodejs/repl 
 - [x] calling basic js function such as console.log
 - [x] getting the result of the execution printed
@@ -120,16 +120,14 @@ Subject to change.
 - [x] implement basic `sh` builtin
 - [x] better builtins importation
 - [x] implement basic `npm` command acting as a binary which takes a json as input and outputs json
-
-### Alpha 0.0.4
 - [x] implement basic `stat` builtin
 - [x] enable nacre to launch nacre script from file
 - [x] implement basic `mkdir` builtin
 - [x] implement basic `pwd` builtin
-
-### In progress (Main branch)
 - [x] get closing braces, brackets, parentheses, single quote, double quote & backtiks automatically when opening one
 - [x] implement basic `mv` builtin
+
+### In progress (Main branch)
 
 ### Backlog
 - [ ] implement basic `rm`
