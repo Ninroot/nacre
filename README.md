@@ -126,18 +126,20 @@ Subject to change.
 - [x] implement basic `pwd` builtin
 - [x] get closing braces, brackets, parentheses, single quote, double quote & backtiks automatically when opening one
 - [x] implement basic `mv` builtin
+- [x] implement basic `touch`
+- [x] implement basic `chmod` (permission)
 
 ### In progress (Main branch)
 
 ### Backlog
 - [ ] implement basic `rm`
-- [ ] implement basic `touch`
 - [ ] equivalent of cmd + shift + p to find an action in VSCode but to find a command (ctrl + f?)
+- [ ] Path completion
+- [ ] Auto require
 - [ ] implement basic `sudo` (?)
 - [ ] implement basic `cat` builtin (?)
 - [ ] implement basic `copy` builtin
 - [ ] distinguish the return of a value (json) from the stdout (frontend)
-- [ ] implement basic `chmod` (permission)
 - [ ] implement basic `chown` (group)
 - [ ] implement basic `which` (?)
 - [ ] implement basic `user`
