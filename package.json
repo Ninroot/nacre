@@ -1,7 +1,7 @@
 {
   "name": "nacre",
   "version": "0.0.6",
-  "description": "Intuitive object-oriented shell",
+  "description": "JavaScript Shell",
   "main": "src/index.js",
   "license": "MIT",
   "author": {
@@ -30,6 +30,7 @@
   "homepage": "https://github.com/Ninroot/nacre/blob/main/README.md",
   "keywords": [
     "object",
+    "javascript",
     "shell",
     "console",
     "terminal",
