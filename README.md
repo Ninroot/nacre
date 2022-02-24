@@ -2,100 +2,11 @@
 
 [![stability-alpha](https://img.shields.io/badge/stability-alpha-f4d03f.svg)](https://github.com/mkenney/software-guides/blob/master/STABILITY-BADGES.md#alpha)
 
-Nacre is an **object-oriented shell** whose motto is **intuitiveness**. 
+[Nacre](https://nacre.sh/) is an open source **object-oriented shell** leveraging the full potential of **JavaScript** for those who prefer to work with objects rather than text. The project relies on NodeJS.
 
-Nacre does not aim to make you learn another shell language but instead leverages the full potential of Javascript.
-Because every command returns JSON, you manipulate objects instead of parsing raw lines.
+## Installation
 
-We rather encourage experimenting rather than reading endless documentation. For example if you wish to know how to use
-`cd`, run it and explore using autocompletion.
-
-https://user-images.githubusercontent.com/11426226/152829546-8acdf310-d339-4f6e-ae1d-69154b97ac01.mp4
-
-## Usage
-
-### Install
-
-You must have [NodeJS](https://nodejs.org/en/) installed on your system. Once this is done, you can install nacre:
-```shell
-$ npm install -g nacre
-```
-
-To launch a nacre shell:
-```shell
-$ nacre
-```
-
-You can also run a nacre script file (see [an example](./test/nacre-script.js)):
-```shell
-$ nacre myscript.js
-```
-
-### Examples
-
-```js
-// returns an array of the files and directories of the working directory like:
-> ls()
-  [ 'basic', 'empty', 'recursive', 'recursive_simple' ]
-// returns an array of the files and directories of the working directory like:
-> ls.recursive()
-  [
-    'basic',
-    'basic/a',
-    'basic/b',
-    'empty',
-    'recursive',
-    'recursive/d1',
-    'recursive/d1/d11',
-    'recursive/d1/d11/f11',
-    'recursive/d1/d11/f12',
-    'recursive/d1/d12',
-    'recursive/d1/f1',
-    'recursive/d2',
-    'recursive/d2/f21',
-    'recursive/f1',
-    'recursive_simple',
-    'recursive_simple/d1',
-    'recursive_simple/d1/f1',
-    'recursive_simple/d1/f2'
-  ]
-// get status of each file 
-> ls.recursive().map(stat)
-  [
-  {
-    name: 'basic',
-    type: 'directory',
-    size: 128,
-    createdAt: 2022-02-07T11:16:23.285Z,
-    modifiedAt: 2022-02-07T11:16:39.576Z,
-    owner: 'arnauddebec',
-    group: 'staff'
-  },
-  {
-    name: 'a',
-      type: 'file',
-    size: 0,
-    createdAt: 2022-02-07T11:16:30.806Z,
-    modifiedAt: 2022-02-07T11:16:30.806Z,
-    owner: 'arnauddebec',
-    group: 'staff'
-  },
-  ...
-```
-
-## Available commands
-
-- `ls`
-- `cd`
-- `sh`
-- `stat`
-- `pwd`
-- `mkdir`
-- `npm`
-``
-## Support
-
-[StackOverflow](https://stackoverflow.com/questions/tagged/nacre)
+[Getting started](https://nacre.sh/getting-started).
 
 ## Contributing
 
