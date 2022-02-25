@@ -4,6 +4,7 @@ exports.cat = require('./cat');
 exports.cd = require('./cd');
 exports.chmod = require('./chmod');
 exports.chown = require('./chown');
+exports.grep = require('./grep');
 exports.ls = require('./ls');
 exports.mkdir = require('./mkdir');
 exports.pwd = require('./pwd');
