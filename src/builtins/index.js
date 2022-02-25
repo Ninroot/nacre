@@ -8,3 +8,4 @@ exports.mkdir = require('./mkdir');
 exports.pwd = require('./pwd');
 exports.touch = require('./touch');
 exports.chmod = require('./chmod');
+exports.chown = require('./chown');
