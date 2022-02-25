@@ -1,6 +1,9 @@
 'use strict';
 
-const { describe, it } = require('mocha');
+const {
+  describe,
+  it,
+} = require('mocha');
 const assert = require('assert/strict');
 const path = require('path');
 
@@ -28,7 +31,10 @@ describe('chown unit test', () => {
   });
 
   it('chown set file same username and group', () => {
-    const { owner, group } = stat(testFile);
+    const {
+      owner,
+      group
+    } = stat(testFile);
     const actual = chown.set(testFile, owner, group);
     assert.equal(actual.owner, owner);
     assert.equal(actual.group, group);
