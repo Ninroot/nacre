@@ -22,16 +22,16 @@ describe('cat unit test', () => {
   });
 
   it('cat read file', () => {
-    assert.equal(cat.read(originalFile), 'This is a\ntest file\n');
+    assert.deepEqual(cat.lines(originalFile), ['This is a', 'test file', '']);
   });
 
   it('cat write file', () => {
-    assert.equal(cat.write(anotherFile, 'A test'), 'A test');
-    assert.equal(cat.read(anotherFile), 'A test');
+    assert.equal(cat.truncated(anotherFile, 'A test'), 'A test');
+    assert.equal(cat(anotherFile), 'A test');
   });
 
   it('cat append file', () => {
-    assert.equal(cat.write(anotherFile, ''), '');
+    assert.equal(cat.truncated(anotherFile, ''), '');
     assert.equal(cat.append(anotherFile, 'A'), 'A');
     assert.equal(cat.append(anotherFile, 'test'), 'Atest');
   });

@@ -6,6 +6,8 @@ const {
   writeFileSync,
 } = require('fs');
 
+const { EOL } = require('os');
+
 // Open file for reading. An exception occurs if the file does not exist.
 const cat = (filepath) => {
   return readFileSync(filepath, {
@@ -14,12 +16,12 @@ const cat = (filepath) => {
   });
 };
 
-cat.read = (filepath) => {
-  return cat(filepath);
-};
+cat.lines = (filepath) => {
+  return cat(filepath).split(EOL);
+}
 
 // Open file for writing. The file is created (if it does not exist) or truncated (if it exists).
-cat.write = (filepath, string) => {
+cat.truncated = (filepath, string) => {
   writeFileSync(filepath, string, {
     encoding: 'utf8',
     flag: 'w'
