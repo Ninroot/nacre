@@ -1,6 +1,6 @@
 {
   "name": "nacre",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "JavaScript Shell",
   "main": "src/index.js",
   "license": "MIT",
