@@ -1,9 +1,20 @@
 'use strict';
 
-const { describe, it } = require('mocha');
+const { describe, it, before, after } = require('mocha');
 const assert = require('assert/strict');
 
 const cd = require('../../src/builtins/cd');
+
+let cwd;
+
+before('save current working directory', () => {
+  cwd = process.cwd();
+  console.log(cwd);
+});
+
+after('restore current working directory', () => {
+  process.chdir(cwd);
+});
 
 describe('cd unit test', () => {
   it('should accept cd .', () => {

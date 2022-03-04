@@ -7,7 +7,7 @@ const os = require('os');
 module.exports = async () => {
   let handle;
   try {
-    const historyPath = path.join(os.homedir(), '.node_repl_history');
+    const historyPath = path.join(os.homedir(), '.nacre_repl_history');
     handle = await fs.open(historyPath, 'a+', 0o0600);
     const data = await handle.readFile({ encoding: 'utf8' });
     const history = data.split(os.EOL, 1000);

@@ -1,11 +1,27 @@
 'use strict';
 
-const { describe, it, beforeEach } = require('mocha');
+const {
+  describe,
+  it,
+  beforeEach,
+  before,
+  after,
+} = require('mocha');
 const assert = require('assert/strict');
 const path = require('path');
 
 const ls = require('../../src/builtins/ls');
 const cd = require('../../src/builtins/cd');
+
+let cwd;
+
+before('save current working directory', () => {
+  cwd = process.cwd();
+});
+
+after('restore current working directory', () => {
+  process.chdir(cwd);
+});
 
 describe('ls unit test', () => {
   beforeEach('move to current dir', () => {

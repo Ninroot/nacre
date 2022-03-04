@@ -33,9 +33,9 @@ if (args._.length === 0) {
 }
 
 if (args._.length === 1) {
+  require('./global');
   const firstArg = args._[0];
   const filepath = require('path').resolve(firstArg);
-  require('./global');
   require(filepath);
   process.exit(0);
 }

@@ -20,7 +20,7 @@ describe('grep test', () => {
 
   it('grep throws', () => {
     assert.throws(() => grep(), {
-      message: 'Regex required'
+      message: 'Regex required',
     });
   });
 });

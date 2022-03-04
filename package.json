@@ -1,7 +1,7 @@
 {
   "name": "nacre",
-  "version": "0.0.7",
-  "description": "JavaScript Shell",
+  "version": "0.0.8",
+  "description": "Intuitive object-oriented shell",
   "main": "src/index.js",
   "license": "MIT",
   "author": {
@@ -10,7 +10,7 @@
   },
   "scripts": {
     "lint": "eslint src",
-    "test": "mocha $(find test -name '*.test.js')"
+    "test": "mocha --recursive"
   },
   "bin": {
     "nacre": "./src/index.js"
@@ -27,10 +27,10 @@
   "bugs": {
     "url": "https://github.com/Ninroot/nacre/issues"
   },
-  "homepage": "https://github.com/Ninroot/nacre/blob/main/README.md",
+  "homepage": "https://nacre.sh",
   "keywords": [
+    "intuitive",
     "object",
-    "javascript",
     "shell",
     "console",
     "terminal",
@@ -46,12 +46,13 @@
     "eslint": "^6.5.1",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.20.2",
-    "mocha": "^9.2.0",
+    "mocha": "^9.2.1",
     "typescript": "^4.3.5"
   },
   "dependencies": {
     "acorn": "^7.2.0",
     "acorn-loose": "^7.0.0",
+    "acorn-walk": "^8.2.0",
     "chalk": "^4.0.0",
     "emphasize": "^3.0.0",
     "minimist": "^1.2.5",
