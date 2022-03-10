@@ -3,6 +3,7 @@
 const {
   beforeEach,
   afterEach,
+  describe,
   it,
   before,
   after,

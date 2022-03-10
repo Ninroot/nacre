@@ -7,6 +7,20 @@ global.module = module;
 global.require = require;
 global.util = require('util');
 
+Object.defineProperty(globalThis, '_', {
+  value: undefined,
+  writable: true,
+  enumerable: false,
+  configurable: true,
+});
+
+Object.defineProperty(globalThis, '_err', {
+  value: undefined,
+  writable: true,
+  enumerable: false,
+  configurable: true,
+});
+
 Object.keys(builtins)
   .forEach((builtin) => {
     global[builtin] = builtins[builtin];

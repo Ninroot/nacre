@@ -29,7 +29,9 @@ if (args.help || args.h) {
 }
 
 if (args._.length === 0) {
-  require('./repl');
+  const { Repl } = require('./lib/repl');
+  const repl = new Repl(process.stdin, process.stdout, '> ');
+  repl.start();
 }
 
 if (args._.length === 1) {
