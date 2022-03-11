@@ -2,6 +2,7 @@
 
 require('../global');
 const inspector = require('inspector');
+const path = require('path');
 
 class Inspector {
   constructor() {
@@ -47,6 +48,16 @@ class Inspector {
         .then((r) => r.result.map((p) => p.name)),
     ])
       .then((r) => r.flat());
+  }
+
+  loadModule(moduleName) {
+    const moduleAbsPath = path.resolve(process.cwd(), 'node_modules', moduleName);
+    const f = `function load(moduleName) {
+      try {
+        globalThis[moduleName] = require('${moduleAbsPath}');
+      } catch { }
+    }`;
+    return this.callFunctionOn(f, [{ value: moduleName }]);
   }
 
   evaluate(source, throwOnSideEffect) {

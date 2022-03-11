@@ -45,6 +45,7 @@ class Completer {
     }
     if (node.type === 'Identifier') {
       const identifierName = node.name.slice(0, cursor);
+      await this.loadModule(node.name);
       const matchingIdentifier = await this.completeIdentifier(identifierName);
       return {
         completions: this.removePrefix(matchingIdentifier, identifierName),
@@ -58,16 +59,16 @@ class Completer {
         property,
       } = node;
       const globalIds = await this.getGlobalIdentifiers();
-      if (!globalIds.includes(object.name)) {
-        return undefined;
+      if (globalIds.includes(object.name)) {
+        const matchingProperties = await this.completeProperties(node, source, cursor);
+        const propName = (cursor === property.start || property.name === '✖') ? '' : property.name;
+        return {
+          completions: this.removePrefix(matchingProperties, propName),
+          originalSubstring: propName,
+          fillable: true,
+        };
       }
-      const matchingProperties = await this.completeProperties(node, source, cursor);
-      const propName = (cursor === property.start || property.name === '✖') ? '' : property.name;
-      return {
-        completions: this.removePrefix(matchingProperties, propName),
-        originalSubstring: propName,
-        fillable: true,
-      };
+      return undefined;
     }
     if (node.type === 'CallExpression' || node.type === 'NewExpression') {
       if (source[node.end - 1] === ')') {
@@ -138,6 +139,11 @@ class Completer {
 
   getGlobalIdentifiers() {
     return this.runner.getGlobalNames();
+  }
+
+  async loadModule(moduleName) {
+    const { result } = await this.runner.loadModule(moduleName);
+    return result.type === 'object';
   }
 
   async completeProperties(node, source, cursor) {
