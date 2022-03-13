@@ -62,6 +62,12 @@ describe('inspector unit test', () => {
     );
   });
 
+  it('evaluate', async () => {
+    const source = '1 + 1';
+    const actual = await inspector.execute(source);
+    assert.deepStrictEqual(actual, '2');
+  });
+
   it('evaluate with syntax error', async () => {
     const res = await inspector.evaluate('"', true);
     assert.equal(res.result.type, 'object');
