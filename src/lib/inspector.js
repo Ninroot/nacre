@@ -50,11 +50,11 @@ class Inspector {
       .then((r) => r.flat());
   }
 
-  loadModule(moduleName) {
-    const moduleAbsPath = path.resolve(process.cwd(), 'node_modules', moduleName);
+  loadModule(modulePath) {
+    const moduleName = path.basename(modulePath);
     const f = `function load(moduleName) {
       try {
-        globalThis[moduleName] = require('${moduleAbsPath}');
+        globalThis[moduleName] = require('${modulePath}');
       } catch { }
     }`;
     return this.callFunctionOn(f, [{ value: moduleName }]);
