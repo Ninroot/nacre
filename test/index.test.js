@@ -3,14 +3,26 @@
 const {
   describe,
   it,
+  before,
+  after,
 } = require('mocha');
 const assert = require('assert/strict');
 const { spawn } = require('child_process');
 const path = require('path');
 
+let cwd;
+
+before('save current working directory', () => {
+  cwd = process.cwd();
+});
+
+after('restore current working directory', () => {
+  process.chdir(cwd);
+});
+
 function run(...args) {
   return new Promise((res) => {
-    const proc = spawn(process.execPath, [path.join('src', 'index.js'), ...args]);
+    const proc = spawn(process.execPath, [path.join(cwd, 'src', 'index.js'), ...args]);
     const out = [];
     const err = [];
     proc.stdout.on('data', (data) => out.push(data));
