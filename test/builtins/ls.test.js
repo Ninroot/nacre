@@ -31,10 +31,6 @@ describe('ls unit test', () => {
     cd(path.join(__dirname, 'fixtures', 'ls', 'basic'));
     assert.deepStrictEqual(ls(), ['a', 'b']);
   });
-  it('should return a non empty array when path provided', () => {
-    cd(path.join(__dirname, 'fixtures', 'ls'));
-    assert.deepStrictEqual(ls('empty'), []);
-  });
   it('should return a non empty array when recursive', () => {
     cd(path.join(__dirname, 'fixtures', 'ls', 'recursive'));
     const actual = ls.recursive();
@@ -43,7 +39,6 @@ describe('ls unit test', () => {
       'd1/d11',
       'd1/d11/f11',
       'd1/d11/f12',
-      'd1/d12',
       'd1/f1',
       'd2',
       'd2/f21',

@@ -23,10 +23,6 @@ describe('stat unit test', () => {
     const s = stat(path.join(__dirname, 'fixtures', 'stat', 'symbolicLink.file'));
     assert.equal(s.type, 'symbolicLink');
   });
-  it('should recognize a socket file', () => {
-    const s = stat(path.join(__dirname, 'fixtures', 'stat', 'socket.file'));
-    assert.equal(s.type, 'socket');
-  });
   it('should recognize a character file', () => {
     const s = stat(path.join('/dev', 'zero'));
     assert.equal(s.type, 'character');
