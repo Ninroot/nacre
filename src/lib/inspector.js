@@ -74,6 +74,28 @@ class Inspector {
     });
   }
 
+  async execute(line) {
+    const {
+      result,
+      exceptionDetails,
+    } = await this.evaluate(line, false);
+    const uncaught = !!exceptionDetails;
+
+    const { result: inspected } = await this.callFunctionOn(
+      `function inspect(v) {
+        return util.inspect(v, {
+          depth: Infinity,
+          colors: false,
+          showProxy: true,
+          maxArrayLength: Infinity,
+        });
+      }`,
+      [result],
+    );
+
+    return `${uncaught ? 'Uncaught ' : ''}${inspected.value}`;
+  }
+
   callFunctionOn(f, args) {
     return this.post('Runtime.callFunctionOn', {
       executionContextId: 1,
