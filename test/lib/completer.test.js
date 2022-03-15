@@ -132,6 +132,17 @@ describe('completer unit test', () => {
     );
   });
 
+  it('"./|"', async () => {
+    const { completions } = await completer.complete('"./"', 3);
+    ['dire1', 'dire2', 'file1.md', 'file2.md']
+      .forEach((file) => assert.ok(completions.includes(file), `should include ${file}`));
+  });
+
+  it('"./dir|"', async () => {
+    const { completions } = await completer.complete('"./dir"', 6);
+    assert.deepEqual(completions, ['e1', 'e2']);
+  });
+
   it('ls("dire1/"|', async () => {
     const actual = await completer.complete('ls("dire1/"');
     assert.equal(actual, undefined);

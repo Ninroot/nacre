@@ -2,8 +2,8 @@
 
 const acorn = require('acorn-loose');
 const walk = require('acorn-walk');
-const path = require('path');
 const fs = require('fs');
+const path = require('./path');
 
 class Completer {
   constructor(runner) {
@@ -34,12 +34,12 @@ class Completer {
       if (cursor === node.start || (cursor === node.end && this.isCompletedString(node.raw))) {
         return undefined;
       }
-      const itemPath = cursor === node.start + 1 ? '' : node.value;
+      const itemPath = path.normalizeCurrent(cursor === node.start + 1 ? '' : node.value);
       const matchingPaths = this.completePath(itemPath);
-      const trailingItempath = itemPath.slice(-1)[0] === '/' ? '' : path.basename(itemPath);
+      const trailingItemPath = itemPath.slice(-1)[0] === '/' ? '' : path.basename(itemPath);
       return {
         completions: this.removePrefix(matchingPaths, itemPath),
-        originalSubstring: trailingItempath,
+        originalSubstring: trailingItemPath,
         fillable: true,
       };
     }
