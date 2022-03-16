@@ -8,5 +8,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
-      - run: npm install -g nacre
+      - run: pwd
+      - run: ls -l
+      - run: npm install -g .
       - run: nacre --version
