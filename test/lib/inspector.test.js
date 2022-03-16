@@ -5,23 +5,12 @@ const {
   beforeEach,
   afterEach,
   it,
-  before,
-  after,
 } = require('mocha');
 const assert = require('assert/strict');
 const path = require('path');
 const { Inspector } = require('../../src/lib/inspector');
 
-let cwd;
 let inspector;
-
-before('save current working directory', () => {
-  cwd = process.cwd();
-});
-
-after('restore current working directory', () => {
-  process.chdir(cwd);
-});
 
 beforeEach(async () => {
   inspector = new Inspector();
@@ -120,8 +109,8 @@ describe('inspector unit test', () => {
 
   describe('auto require', () => {
     it('should load fakemodule', async () => {
-      process.chdir(path.join(__dirname, 'fixtures', 'inspector'));
-      const load = await inspector.loadModule('fakemodule');
+      const moduleAbsPath = path.join(__dirname, 'fixtures', 'inspector', 'node_modules', 'fakemodule');
+      const load = await inspector.loadModule(moduleAbsPath);
       assert.ok(load.result);
       const evaluation = await inspector.evaluate('fakemodule');
       assert.equal(evaluation.result.value, 'module loaded!');
