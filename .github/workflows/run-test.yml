@@ -1,7 +1,7 @@
-name: learn-github-actions
+name: run-test
 on: [push]
 jobs:
-  check-nacre-version:
+  ubuntu-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
