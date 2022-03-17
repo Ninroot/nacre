@@ -7,10 +7,17 @@ const {
 const assert = require('assert/strict');
 const path = require('path');
 
-const chown = require('../../src/builtins/chown');
-const stat = require('../../src/builtins/stat');
+const windows = process.platform === 'win32';
 
 describe('chown unit test', () => {
+  if (windows) {
+    // chown is not available on windows
+    this.skip();
+  }
+
+  const chown = require('../../src/builtins/chown');
+  const stat = require('../../src/builtins/stat');
+
   const testFile = path.join(__dirname, 'fixtures', 'chown', 'test');
 
   it('chown', () => {
