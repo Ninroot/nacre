@@ -8,7 +8,6 @@ const assert = require('assert/strict');
 const path = require('path');
 const cat = require('../../src/builtins/cat');
 
-
 describe('cat unit test', () => {
   const originalFile = path.join(__dirname, 'fixtures', 'cat', 'original');
   const anotherFile = path.join(__dirname, 'fixtures', 'cat', 'another');

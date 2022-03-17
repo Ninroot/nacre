@@ -5,18 +5,17 @@ const assert = require('assert/strict');
 
 const cd = require('../../src/builtins/cd');
 
-let cwd;
-
-before('save current working directory', () => {
-  cwd = process.cwd();
-  console.log(cwd);
-});
-
-after('restore current working directory', () => {
-  process.chdir(cwd);
-});
-
 describe('cd unit test', () => {
+  let cwd;
+
+  before('save current working directory', () => {
+    cwd = process.cwd();
+  });
+
+  after('restore current working directory', () => {
+    process.chdir(cwd);
+  });
+
   it('should accept cd .', () => {
     assert.equal(typeof cd('.'), 'string');
   });

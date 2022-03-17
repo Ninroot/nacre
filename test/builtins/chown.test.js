@@ -1,19 +1,23 @@
 'use strict';
 
 const {
+  before,
   describe,
   it,
 } = require('mocha');
 const assert = require('assert/strict');
 const path = require('path');
 
-const windows = process.platform === 'win32';
-
 describe('chown unit test', () => {
-  if (windows) {
-    // chown is not available on windows
-    this.skip();
-  }
+  const windows = process.platform === 'win32';
+
+  // chown is not available on Windows
+  // eslint-disable-next-line func-names
+  before(function () {
+    if (windows) {
+      this.skip();
+    }
+  });
 
   const chown = require('../../src/builtins/chown');
   const stat = require('../../src/builtins/stat');

@@ -1,8 +1,8 @@
 'use strict';
 
 const { lstatSync } = require('fs');
-const userid = require('userid');
 const nodePath = require('path');
+const userid = require('./lib/userid');
 
 function getType(fileStat) {
   if (fileStat.isFile()) {

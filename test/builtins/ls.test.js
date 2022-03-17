@@ -13,17 +13,17 @@ const path = require('path');
 const ls = require('../../src/builtins/ls');
 const cd = require('../../src/builtins/cd');
 
-let cwd;
-
-before('save current working directory', () => {
-  cwd = process.cwd();
-});
-
-after('restore current working directory', () => {
-  process.chdir(cwd);
-});
-
 describe('ls unit test', () => {
+  let cwd;
+
+  before('save current working directory', () => {
+    cwd = process.cwd();
+  });
+
+  after('restore current working directory', () => {
+    process.chdir(cwd);
+  });
+
   beforeEach('move to current dir', () => {
     cd(__dirname);
   });
