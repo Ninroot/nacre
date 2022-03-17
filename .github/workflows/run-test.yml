@@ -4,7 +4,7 @@ jobs:
   main:
     strategy:
       matrix:
-        os: [ubuntu-20.04, macos-11]
+        os: [ubuntu-20.04, macos-11, windows-2022]
         node: ['16']
     runs-on: ${{ matrix.os }}
     steps:
