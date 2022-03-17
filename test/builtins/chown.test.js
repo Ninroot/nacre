@@ -9,7 +9,6 @@ const path = require('path');
 
 const chown = require('../../src/builtins/chown');
 const stat = require('../../src/builtins/stat');
-const userid = require('userid');
 
 describe('chown unit test', () => {
   const testFile = path.join(__dirname, 'fixtures', 'chown', 'test');
@@ -33,7 +32,7 @@ describe('chown unit test', () => {
   it('chown set file same username and group', () => {
     const {
       owner,
-      group
+      group,
     } = stat(testFile);
     const actual = chown.set(testFile, owner, group);
     assert.equal(actual.owner, owner);
@@ -54,9 +53,7 @@ describe('chown unit test', () => {
   });
 
   it('chown set file unknown username', () => {
-    const unknownUser = 'unknownUser';
-    assert.throws(() => userid.uid(unknownUser),
-      'Sanity check: the user should not exist to unit test that function');
+    const unknownUser = 'thisShouldBeAnUnknownUserForTestingOnly';
     assert.throws(() => chown.set(testFile, unknownUser));
   });
 });
