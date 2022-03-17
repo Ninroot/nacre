@@ -7,20 +7,20 @@ const {
 } = require('mocha');
 const assert = require('assert/strict');
 const path = require('path');
+const stat = require('../../src/builtins/stat');
 
 describe('chown unit test', () => {
-  const windows = process.platform === 'win32';
-
+  let chown;
   // chown is not available on Windows
   // eslint-disable-next-line func-names
   before(function () {
-    if (windows) {
+    if (process.platform === 'win32') {
       this.skip();
+    } else {
+      // skip does not prevent importation
+      chown = require('../../src/builtins/chown');
     }
   });
-
-  const chown = require('../../src/builtins/chown');
-  const stat = require('../../src/builtins/stat');
 
   const testFile = path.join(__dirname, 'fixtures', 'chown', 'test');
 
