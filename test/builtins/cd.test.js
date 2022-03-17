@@ -22,8 +22,9 @@ describe('cd unit test', () => {
   it('should accept cd without arg', () => {
     assert.equal(typeof cd(), 'string');
   });
-  it('should accept cd before than /', () => {
-    assert.equal(cd('/../..'), '/');
+  it('should accept cd /', () => {
+    const path = require('path');
+    assert.equal(cd('/../..'), path.resolve('/'));
   });
   it('should accept cd to previous', () => {
     assert.equal(typeof cd.previous(), 'string');
