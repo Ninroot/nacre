@@ -13,6 +13,6 @@ describe('sh unit test', () => {
     assert.equal(sh(), undefined);
   });
   it('should return string when echo', () => {
-    assert.equal(sh('echo "Hello world!"'), 'Hello world!\n');
+    assert.equal(sh('echo "Hello world!"'), `Hello world!${(require('os').EOL)}`);
   });
 });
