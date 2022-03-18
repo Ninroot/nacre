@@ -9,11 +9,12 @@ exports.grep = require('./grep');
 exports.ls = require('./ls');
 exports.mkdir = require('./mkdir');
 exports.pwd = require('./pwd');
-exports.sh = require('./sh');
 exports.stat = require('./stat');
 exports.touch = require('./touch');
 
 // userid is not available for windows
 if (!windows) {
   exports.chown = require('./chown');
+} else {
+  exports.sh = require('./sh');
 }
