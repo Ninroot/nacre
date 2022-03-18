@@ -11,7 +11,7 @@ describe('stat unit test', () => {
 
   function testOwnership(statFile) {
     if (windows) {
-      assert.equal(typeof statFile.owner, undefined);
+      assert.equal(typeof statFile.owner, 'undefined');
     } else {
       assert.equal(typeof statFile.owner, 'string');
     }
