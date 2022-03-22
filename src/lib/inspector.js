@@ -52,7 +52,6 @@ class Inspector {
 
   loadModule(moduleAbsPath) {
     const moduleName = path.basename(moduleAbsPath);
-    console.log({moduleAbsPath});
     const f = `function load(moduleName) {
       try {
         const m = require('${moduleAbsPath}');
