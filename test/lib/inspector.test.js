@@ -114,9 +114,9 @@ describe('inspector unit test', () => {
     });
   });
 
-  // eslint-disable-next-line func-names
-  describe('auto require', function () {
-    it('should load fakemodule', async () => {
+  describe('auto require', () => {
+    // eslint-disable-next-line func-names
+    it('should load fakemodule', async function () {
       if (process.platform === 'win32') {
         // FIXME: should work
         this.skip();
