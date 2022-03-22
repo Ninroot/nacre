@@ -9,6 +9,7 @@ const {
 const assert = require('assert/strict');
 const path = require('path');
 const { Inspector } = require('../../src/lib/inspector');
+const { ls } = require('../../src/builtins');
 
 let inspector;
 
@@ -116,6 +117,7 @@ describe('inspector unit test', () => {
   describe('auto require', () => {
     it('should load fakemodule', async () => {
       const moduleAbsPath = path.join(__dirname, 'fixtures', 'inspector', 'node_modules', 'fakemodule');
+      console.log(ls(moduleAbsPath));
       const load = await inspector.loadModule(moduleAbsPath);
       console.log({load});
       assert.ok(load.result);
