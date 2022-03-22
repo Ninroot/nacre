@@ -117,6 +117,7 @@ describe('inspector unit test', () => {
     it('should load fakemodule', async () => {
       const moduleAbsPath = path.join(__dirname, 'fixtures', 'inspector', 'node_modules', 'fakemodule');
       const load = await inspector.loadModule(moduleAbsPath);
+      console.log({load});
       assert.ok(load.result);
       const evaluation = await inspector.evaluate('fakemodule');
       assert.equal(evaluation.result.value, 'module loaded!');
