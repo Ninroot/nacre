@@ -124,5 +124,14 @@ describe('inspector unit test', () => {
       const evaluation = await inspector.evaluate('fakemodule');
       assert.equal(evaluation.result.value, 'module loaded!');
     });
+
+    it('should not load a module that does not exist', async () => {
+      const unknownModule = 'moduleThatDoesNotExist';
+      const moduleAbsPath = path.join(__dirname, 'fixtures', 'inspector', 'node_modules', unknownModule);
+      const load = await inspector.loadModule(moduleAbsPath);
+      assert.ok(load.result);
+      const evaluation = await inspector.evaluate(unknownModule, false);
+      assert.equal(evaluation.result.className, 'ReferenceError');
+    });
   });
 });
