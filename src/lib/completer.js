@@ -47,11 +47,14 @@ class Completer {
       const identifierName = node.name.slice(0, cursor);
       await this.loadModule(node.name);
       const matchingIdentifier = await this.completeIdentifier(identifierName);
-      return {
-        completions: this.removePrefix(matchingIdentifier, identifierName),
-        originalSubstring: identifierName,
-        fillable: true,
-      };
+      if (matchingIdentifier.length > 0) {
+        return {
+          completions: this.removePrefix(matchingIdentifier, identifierName),
+          originalSubstring: identifierName,
+          fillable: true,
+        };
+      }
+      return undefined;
     }
     if (node.type === 'MemberExpression') {
       const {
@@ -75,10 +78,12 @@ class Completer {
         return undefined;
       }
       const matchingFunctions = await this.completeFunction(source, node);
-      return {
-        completions: [matchingFunctions],
-        fillable: false,
-      };
+      if (matchingFunctions) {
+        return {
+          completions: [matchingFunctions],
+          fillable: false,
+        };
+      }
     }
 
     return undefined;

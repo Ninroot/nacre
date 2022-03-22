@@ -5,7 +5,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-20.04, macos-11, windows-2022]
-        node: ['16']
+        node: ['17']
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2

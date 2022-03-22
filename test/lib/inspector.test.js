@@ -48,7 +48,7 @@ describe('inspector unit test', () => {
     ].forEach((name) => assert.ok(gn.includes(name), `Expected ${name}`));
   });
 
-  it('evaluate', async () => {
+  it('evaluate 1 + 1', async () => {
     const source = '1 + 1';
     const actual = await inspector.evaluate(source, true);
     assert.deepStrictEqual(
@@ -63,10 +63,16 @@ describe('inspector unit test', () => {
     );
   });
 
-  it('evaluate', async () => {
+  it('execute 1 + 1', async () => {
     const source = '1 + 1';
     const actual = await inspector.execute(source);
     assert.deepStrictEqual(actual, '2');
+  });
+
+  it('evaluate somethingThatDoesNotExist', async () => {
+    const { result: actual } = await inspector.evaluate('somethingThatDoesNotExist', true);
+    // ReferenceError only when throwOnSideEffect is true
+    assert.ok(actual.description.includes('EvalError: Possible side-effect in debug-evaluate'));
   });
 
   it('evaluate with syntax error', async () => {

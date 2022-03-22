@@ -71,14 +71,8 @@ describe('completer unit test', () => {
   });
 
   it('thisShouldBeUnknown|', async () => {
-    assert.deepStrictEqual(
-      await completer.complete('thisShouldBeUnknown'),
-      {
-        completions: [],
-        originalSubstring: 'thisShouldBeUnknown',
-        fillable: true,
-      },
-    );
+    const actual = await completer.complete('thisShouldBeUnknown');
+    assert.equal(actual, undefined);
   });
 
   it('1 < 2|', async () => {
