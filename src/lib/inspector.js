@@ -56,7 +56,7 @@ class Inspector {
     const f = `function load(moduleName) {
       try {
         globalThis[moduleName] = require('${moduleAbsPath}');
-      } catch { }
+      } catch (e) { globalThis[moduleName] = e }
     }`;
     return this.callFunctionOn(f, [{ value: moduleName }]);
   }
