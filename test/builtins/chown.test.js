@@ -1,17 +1,27 @@
 'use strict';
 
 const {
+  before,
   describe,
   it,
 } = require('mocha');
 const assert = require('assert/strict');
 const path = require('path');
-
-const chown = require('../../src/builtins/chown');
 const stat = require('../../src/builtins/stat');
-const userid = require('userid');
 
 describe('chown unit test', () => {
+  let chown;
+  // chown is not available on Windows
+  // eslint-disable-next-line func-names
+  before(function () {
+    if (process.platform === 'win32') {
+      this.skip();
+    } else {
+      // skip does not prevent importation
+      chown = require('../../src/builtins/chown');
+    }
+  });
+
   const testFile = path.join(__dirname, 'fixtures', 'chown', 'test');
 
   it('chown', () => {
@@ -33,7 +43,7 @@ describe('chown unit test', () => {
   it('chown set file same username and group', () => {
     const {
       owner,
-      group
+      group,
     } = stat(testFile);
     const actual = chown.set(testFile, owner, group);
     assert.equal(actual.owner, owner);
@@ -54,9 +64,7 @@ describe('chown unit test', () => {
   });
 
   it('chown set file unknown username', () => {
-    const unknownUser = 'unknownUser';
-    assert.throws(() => userid.uid(unknownUser),
-      'Sanity check: the user should not exist to unit test that function');
+    const unknownUser = 'thisShouldBeAnUnknownUserForTestingOnly';
     assert.throws(() => chown.set(testFile, unknownUser));
   });
 });

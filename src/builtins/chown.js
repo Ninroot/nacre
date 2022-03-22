@@ -1,5 +1,7 @@
 'use strict';
 
+// userid is not available for windows
+
 const {
   lstatSync,
   chownSync,
@@ -15,9 +17,7 @@ const chown = (itemPath) => {
   };
 };
 
-chown.get = (itemPath) => {
-  return chown(itemPath);
-};
+chown.get = (itemPath) => chown(itemPath);
 
 chown.set = (itemPath, username, groupname) => {
   chownSync(itemPath, userid.uid(username), userid.gid(groupname));

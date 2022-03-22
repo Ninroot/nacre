@@ -15,6 +15,6 @@ describe('path unit test', () => {
     assert.equal(path.normalizeCurrent('./'), '');
     assert.equal(path.normalizeCurrent('./foo'), 'foo');
     assert.equal(path.normalizeCurrent('././foo'), 'foo');
-    assert.equal(path.normalizeCurrent('./../foo'), '../foo');
+    assert.equal(path.normalizeCurrent('./../foo'), path.normalize('../foo'));
   });
 });

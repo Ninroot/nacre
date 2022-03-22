@@ -50,12 +50,15 @@ class Inspector {
       .then((r) => r.flat());
   }
 
-  loadModule(modulePath) {
-    const moduleName = path.basename(modulePath);
+  loadModule(moduleAbsPath) {
+    const moduleName = path.basename(moduleAbsPath);
     const f = `function load(moduleName) {
       try {
-        globalThis[moduleName] = require('${modulePath}');
-      } catch { }
+        const m = require('${moduleAbsPath}');
+        if (m) {
+          globalThis[moduleName] = m;
+        }
+      } catch (e) { }
     }`;
     return this.callFunctionOn(f, [{ value: moduleName }]);
   }

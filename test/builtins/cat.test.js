@@ -8,7 +8,6 @@ const assert = require('assert/strict');
 const path = require('path');
 const cat = require('../../src/builtins/cat');
 
-
 describe('cat unit test', () => {
   const originalFile = path.join(__dirname, 'fixtures', 'cat', 'original');
   const anotherFile = path.join(__dirname, 'fixtures', 'cat', 'another');
@@ -18,7 +17,8 @@ describe('cat unit test', () => {
   });
 
   it('cat file', () => {
-    assert.equal(cat(originalFile), 'This is a\ntest file\n');
+    const eol = require('os').EOL;
+    assert.equal(cat(originalFile), `This is a${eol}test file${eol}`);
   });
 
   it('cat read file', () => {

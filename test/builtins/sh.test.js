@@ -1,11 +1,23 @@
 'use strict';
 
-const { describe, it } = require('mocha');
+const {
+  describe,
+  it,
+  before
+} = require('mocha');
 const assert = require('assert/strict');
 
 const sh = require('../../src/builtins/sh');
 
 describe('sh unit test', () => {
+  // eslint-disable-next-line func-names
+  before(function () {
+    // sh is not present for windows
+    if (process.platform === 'win32') {
+      this.skip();
+    }
+  });
+
   it('should return string when ls', () => {
     assert.equal(typeof sh('ls'), 'string');
   });

@@ -5,23 +5,13 @@ const {
   beforeEach,
   afterEach,
   it,
-  before,
-  after,
 } = require('mocha');
 const assert = require('assert/strict');
 const path = require('path');
 const { Inspector } = require('../../src/lib/inspector');
+const { ls } = require('../../src/builtins');
 
-let cwd;
 let inspector;
-
-before('save current working directory', () => {
-  cwd = process.cwd();
-});
-
-after('restore current working directory', () => {
-  process.chdir(cwd);
-});
 
 beforeEach(async () => {
   inspector = new Inspector();
@@ -59,7 +49,7 @@ describe('inspector unit test', () => {
     ].forEach((name) => assert.ok(gn.includes(name), `Expected ${name}`));
   });
 
-  it('evaluate', async () => {
+  it('evaluate 1 + 1', async () => {
     const source = '1 + 1';
     const actual = await inspector.evaluate(source, true);
     assert.deepStrictEqual(
@@ -74,10 +64,16 @@ describe('inspector unit test', () => {
     );
   });
 
-  it('evaluate', async () => {
+  it('execute 1 + 1', async () => {
     const source = '1 + 1';
     const actual = await inspector.execute(source);
     assert.deepStrictEqual(actual, '2');
+  });
+
+  it('evaluate somethingThatDoesNotExist', async () => {
+    const { result: actual } = await inspector.evaluate('somethingThatDoesNotExist', true);
+    // ReferenceError only when throwOnSideEffect is true
+    assert.ok(actual.description.includes('EvalError: Possible side-effect in debug-evaluate'));
   });
 
   it('evaluate with syntax error', async () => {
@@ -119,12 +115,26 @@ describe('inspector unit test', () => {
   });
 
   describe('auto require', () => {
-    it('should load fakemodule', async () => {
-      process.chdir(path.join(__dirname, 'fixtures', 'inspector'));
-      const load = await inspector.loadModule('fakemodule');
+    // eslint-disable-next-line func-names
+    it('should load fakemodule', async function () {
+      if (process.platform === 'win32') {
+        // FIXME: should work
+        this.skip();
+      }
+      const moduleAbsPath = path.join(__dirname, 'fixtures', 'inspector', 'node_modules', 'fakemodule');
+      const load = await inspector.loadModule(moduleAbsPath);
       assert.ok(load.result);
       const evaluation = await inspector.evaluate('fakemodule');
       assert.equal(evaluation.result.value, 'module loaded!');
+    });
+
+    it('should not load a module that does not exist', async () => {
+      const unknownModule = 'moduleThatDoesNotExist';
+      const moduleAbsPath = path.join(__dirname, 'fixtures', 'inspector', 'node_modules', unknownModule);
+      const load = await inspector.loadModule(moduleAbsPath);
+      assert.ok(load.result);
+      const evaluation = await inspector.evaluate(unknownModule, false);
+      assert.equal(evaluation.result.className, 'ReferenceError');
     });
   });
 });
