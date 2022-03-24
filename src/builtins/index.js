@@ -15,6 +15,5 @@ exports.touch = require('./touch');
 if (!windows) {
   exports.chmod = require('./chmod');
   exports.chown = require('./chown');
-} else {
   exports.sh = require('./sh');
 }

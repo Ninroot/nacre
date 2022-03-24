@@ -27,4 +27,28 @@ describe('sh unit test', () => {
   it('should return string when echo', () => {
     assert.equal(sh('echo "Hello world!"'), 'Hello world!\n');
   });
+
+  it('should raise an exception when existing command status differs from 0', () => {
+    assert.throws(() => {
+      sh('npm');
+    },
+    {
+      name: 'CommandFailedError',
+      message: 'Command failed: npm',
+      status: 1,
+      signal: null,
+      stdout: /Usage/,
+      stderr: '',
+    });
+  });
+
+  it('should fail if command does not exist', () => {
+    assert.throws(() => {
+      sh('commandThatShouldNotExist');
+    },
+    {
+      name: 'CommandFailedError',
+      status: 127,
+    });
+  });
 });

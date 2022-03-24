@@ -245,6 +245,7 @@ class Repl {
           colors: true,
           showProxy: true,
           maxArrayLength: Infinity,
+          maxStringLength: Infinity,
         });
       }`,
       [result],
