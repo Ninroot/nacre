@@ -4,6 +4,26 @@
 
 [Nacre](https://nacre.sh/) is an **intuitive shell** designed for those who prefer to work with **objects** over text. [Want to give it a try?](https://nacre.sh/getting-started)
 
+## Builtins at your fingertips
+
+Navigate smoothly with preview, completion and your favorits builtins: `ls`, `cd`, `chmod`, `chown`, `stat`, `grep`, and [more](docs#builtins).
+
+![builtins_black](https://user-images.githubusercontent.com/11426226/160006956-f44a6bf0-96f6-475c-93db-b42f1be230ba.gif)
+
+## Automatic module loading
+
+The auto-require mechanism imports your modules when you need it. Explicit import can also be done with `require()`.
+
+![import_back](https://user-images.githubusercontent.com/11426226/160008043-e1cfc744-182f-443c-b480-59372560abc2.gif)
+
+## Installation
+
+```bash
+npm install -g nacre
+```
+
+## Example
+
 An example is better than a long speech:
 ```js
 > ls()
