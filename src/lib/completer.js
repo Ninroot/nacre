@@ -57,21 +57,17 @@ class Completer {
       return undefined;
     }
     if (node.type === 'MemberExpression') {
-      const {
-        object,
-        property,
-      } = node;
-      const globalIds = await this.getGlobalIdentifiers();
-      if (globalIds.includes(object.name)) {
-        const matchingProperties = await this.completeProperties(node, source, cursor);
-        const propName = (cursor === property.start || property.name === '✖') ? '' : property.name;
-        return {
-          completions: this.removePrefix(matchingProperties, propName),
-          originalSubstring: propName,
-          fillable: true,
-        };
+      if (node.computed) {
+        return undefined;
       }
-      return undefined;
+      const { property } = node;
+      const matchingProperties = await this.completeProperties(node, source, cursor);
+      const propName = (cursor === property.start || property.name === '✖') ? '' : property.name;
+      return {
+        completions: this.removePrefix(matchingProperties, propName),
+        originalSubstring: propName,
+        fillable: true,
+      };
     }
     if (node.type === 'CallExpression' || node.type === 'NewExpression') {
       if (source[node.end - 1] === ')') {

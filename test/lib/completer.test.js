@@ -192,6 +192,18 @@ describe('completer unit test', () => {
     );
   });
 
+  it('global.console.lo|', async () => {
+    const actual = await completer.complete('global.console.lo');
+    assert.deepStrictEqual(
+      actual,
+      {
+        completions: ['g'],
+        fillable: true,
+        originalSubstring: 'lo',
+      },
+    );
+  });
+
   it('console.|log', async () => {
     const { completions } = await completer.complete('console.log', 8);
     ['log', 'dir', 'warn', '__proto__']
