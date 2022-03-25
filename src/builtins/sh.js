@@ -11,8 +11,6 @@ const sh = (command) => {
     const res = execSync(command);
     return res.toString();
   } catch (e) {
-    // console.log(e);
-    // console.log(e.output.toString());
     if (e.stack.startsWith('Error: Command failed')) {
       throw new CommandFailedError(e);
     }
