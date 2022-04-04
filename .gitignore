@@ -2,6 +2,9 @@
 .vscode
 .idea
 
+# Typescript
+built
+
 # Node
 node_modules
 
