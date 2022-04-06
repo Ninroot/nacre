@@ -3,7 +3,7 @@
 import {describe, it} from "mocha";
 
 import * as assert from 'assert/strict'
-import grep from '../../../src/builtins/grep';
+import grep = require('../../../src/builtins/grep');
 
 describe('grep test', () => {
   it('grep', () => {
