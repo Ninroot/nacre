@@ -1,12 +1,13 @@
 const assert = require('assert');
+const path = require('path');
 
-const testFolder = '/tmp/tmpNacreTest';
+const testFolder = path.resolve('/tmp/tmpNacreTest');
 let exitCode = 0;
 
 try {
   mkdir.recursive(testFolder);
   const location = cd(testFolder);
-  console.log(location)
+  console.log({ location })
 
   assert.equal(location, pwd())
 

@@ -13,11 +13,11 @@ echo "Print node version"
 node --version
 echo ""
 
-which nacre
-
 echo "Print nacre help"
 nacre --help
 echo ""
+
+which nacre 2>&1
 
 echo "Print nacre version"
 nacre --version

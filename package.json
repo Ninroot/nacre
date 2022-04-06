@@ -9,7 +9,7 @@
     "email": "debec.arnaud@gmail.com"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && chmod +x built/index.js",
     "lint": "eslint src",
     "test:unit": "mocha --require ts-node/register --recursive --extension=ts test/unit",
     "test:system": "sh ./test/system/main.sh"
