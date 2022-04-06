@@ -11,7 +11,8 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint src",
-    "test": "mocha --require ts-node/register --recursive --extension=ts"
+    "test:unit": "mocha --require ts-node/register --recursive --extension=ts test/unit",
+    "test:system": "sh ./test/system/main.sh"
   },
   "bin": {
     "nacre": "./built/index.js"

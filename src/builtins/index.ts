@@ -12,6 +12,7 @@ import chmod = require('./chmod');
 import chown = require('./chown');
 import sh = require('./sh');
 
+// using `export default function` make the builtins unavailable to use in scripting
 export {
   cat,
   cd,

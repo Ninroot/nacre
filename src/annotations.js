@@ -129,7 +129,10 @@ function completeCall(method, expression, buffer) {
             paths = [process.cwd()];
         }
         else {
-            paths = module.paths.concat(Module.globalPaths);
+            // TODO make it nicer?
+            // globalPaths definition not present in Module(?)
+            var globalPaths = Module.globalPaths;
+            paths = module.paths.concat(globalPaths);
         }
         paths.forEach(function (dir) {
             dir = path.resolve(dir, subdir_1);

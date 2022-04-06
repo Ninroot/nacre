@@ -3,7 +3,7 @@
 import path = require('path');
 import {closeSync, openSync, utimesSync } from 'fs';
 
-export default function touch(filepath) {
+const touch = (filepath) => {
   const time = new Date();
   try {
     // change file access and modification times
@@ -13,3 +13,5 @@ export default function touch(filepath) {
   }
   return path.normalize(filepath);
 }
+
+export = touch;
