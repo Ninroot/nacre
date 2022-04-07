@@ -38,7 +38,7 @@ try {
   } catch (e) {
     // seems to always fail under windows github action
     if (e.code === 'EBUSY') {
-      console.err(e);
+      console.error(e);
       console.log('SKIPPING ERROR');
     }
   }
