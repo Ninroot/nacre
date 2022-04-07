@@ -1,7 +1,7 @@
 const assert = require('assert');
 const path = require('path');
 
-const testFolder = path.resolve('/tmp/tmpNacreTest');
+const testFolder = path.resolve('./tmp/tmpNacreTest');
 let exitCode = 0;
 
 try {
