@@ -33,7 +33,15 @@ try {
   exitCode = -1;
 } finally {
   console.log('Cleaning...')
-  require('fs').rmdirSync(testFolder, { recursive: true });
+  try {
+    require('fs').rmdirSync(testFolder, { recursive: true });
+  } catch (e) {
+    // seems to always fail under windows github action
+    if (e.code === 'EBUSY') {
+      console.err(e);
+      console.log('SKIPPING ERROR');
+    }
+  }
   console.log(`Exiting with code ${exitCode}`);
   process.exit(exitCode);
 }
