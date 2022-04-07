@@ -1,6 +1,6 @@
 # Nacre
 
-[![stability-alpha](https://img.shields.io/badge/stability-alpha-f4d03f.svg)](https://github.com/mkenney/software-guides/blob/master/STABILITY-BADGES.md#alpha)
+![version-beta](https://img.shields.io/badge/version-beta-yellow)
 
 [Nacre](https://nacre.sh/) is an **intuitive shell** designed for those who prefer to work with **objects** over text. [Want to give it a try?](https://nacre.sh/getting-started)
 

@@ -9,13 +9,13 @@
     "email": "debec.arnaud@gmail.com"
   },
   "scripts": {
-    "build": "tsc && chmod +x built/index.js",
+    "build": "tsc",
     "lint": "eslint src",
     "test:unit": "mocha --require ts-node/register --recursive --extension=ts test/unit",
-    "test:system": "sh ./test/system/main.sh"
+    "test:system": "nacre ./test/system/fixtures/main.js"
   },
   "bin": {
-    "nacre": "./built/index.js"
+    "nacre": "./bin/index.js"
   },
   "files": [
     "built/",
