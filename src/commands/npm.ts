@@ -2,7 +2,7 @@
 
 const fetch = require('./fetch');
 
-const npm = {};
+const npm:any = {};
 
 /**
  * Install npm package
@@ -19,4 +19,4 @@ npm.install = (packageName) => fetch('npm.router.js', '/install', { packageName 
  */
 npm.uninstall = (packageName, options) => fetch('npm.router.js', '/uninstall', { packageName, options });
 
-exports.npm = npm;
+export = npm;

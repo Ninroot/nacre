@@ -3,9 +3,13 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: [
     '@typescript-eslint',
+    'import',
   ],
   extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
+    'airbnb-typescript/base',
   ],
+  parserOptions: {
+    project: './tsconfig.json'
+  },
+  ignorePatterns: ['*.js']
 };

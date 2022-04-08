@@ -5,6 +5,10 @@
     "target": "es2021",
     "module": "CommonJS",
     "moduleResolution": "Node",
+    "declaration": true
   },
-  "include": ["./src/**/*"]
+  "include": [
+    "./src/**/*.ts",
+    "./test/**/*.ts",
+  ]
 }

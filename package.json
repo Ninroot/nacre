@@ -2,7 +2,7 @@
   "name": "nacre",
   "version": "0.1.1",
   "description": "Intuitive Shell",
-  "main": "built/index.js",
+  "main": "built/src/index.js",
   "license": "MIT",
   "author": {
     "name": "Arnaud Debec",
@@ -18,7 +18,7 @@
     "nacre": "./bin/index.js"
   },
   "files": [
-    "built/",
+    "built/src",
     "README.md",
     "LICENSE"
   ],
@@ -44,9 +44,11 @@
   ],
   "devDependencies": {
     "@types/node": "^17.0.23",
-    "@typescript-eslint/eslint-plugin": "^5.17.0",
-    "@typescript-eslint/parser": "^5.17.0",
+    "@typescript-eslint/eslint-plugin": "^5.18.0",
+    "@typescript-eslint/parser": "^5.18.0",
     "eslint": "^8.12.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
     "mocha": "^9.2.1",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.3"

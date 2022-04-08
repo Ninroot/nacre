@@ -18,7 +18,7 @@ after('restore current working directory', () => {
 
 function run(...args): any {
   return new Promise((res) => {
-    const proc = spawn(process.execPath, [path.join(cwd, 'built', 'index.js'), ...args]);
+    const proc = spawn(process.execPath, [path.join(cwd, 'built', 'src', 'index.js'), ...args]);
     const out = [];
     const err = [];
     proc.stdout.on('data', (data) => out.push(data));

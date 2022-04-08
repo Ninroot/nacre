@@ -1,6 +1,6 @@
 'use strict';
 
-const router = {};
+const router: any = {};
 const routes = {};
 
 router.add = (path, handler) => {
@@ -13,7 +13,7 @@ router.dispatch = () => {
   const json = JSON.parse(process.argv[2] || '');
 
   // console.debug({ json });
-  const res = {};
+  const res: any = {};
   res.success = (resBody) => {
     process.stdout.write(JSON.stringify(resBody));
   };
@@ -23,4 +23,4 @@ router.dispatch = () => {
   routes[json.endpoint](json.body, res);
 };
 
-exports.router = router;
+export = router;

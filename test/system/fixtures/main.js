@@ -7,9 +7,9 @@ let exitCode = 0;
 try {
   mkdir.recursive(testFolder);
   const location = cd(testFolder);
-  console.log({ location })
+  console.log({ location });
 
-  assert.equal(location, pwd())
+  assert.equal(location, pwd());
 
   const filename = 'aFile';
   touch(filename);
@@ -18,10 +18,11 @@ try {
   cat.append(filename, 'This is also data');
   cat.append(filename, 'That is enough');
 
-  const filtered = cat.lines(filename).filter(grep(/data/));
+  const filtered = cat.lines(filename)
+    .filter(grep(/data/));
   assert.equal(filtered.length, 1);
 
-  if(process.platform !== 'win32') {
+  if (process.platform !== 'win32') {
     const perm = chmod.add.read.user(filename);
     console.log('new perm', perm);
     assert.ok(perm !== undefined);
@@ -32,9 +33,10 @@ try {
   console.error(e);
   exitCode = -1;
 } finally {
-  console.log('Cleaning...')
+  console.log('Cleaning...');
   try {
-    require('fs').rmdirSync(testFolder, { recursive: true });
+    require('fs')
+      .rmdirSync(testFolder, { recursive: true });
   } catch (e) {
     // seems to always fail under windows github action
     if (e.code === 'EBUSY') {

@@ -16,7 +16,7 @@ after('restore current working directory', () => {
 
 describe('scripting unit test', () => {
   it('should import pwd builtin', () => {
-    const actual = execSync('node ./built/index.js ./test/unit/lib/fixtures/scripting/pwd.js', { cwd });
+    const actual = execSync('node ./built/src/index.js ./test/unit/lib/fixtures/scripting/pwd.js', { cwd });
     assert.ok(actual.toString().includes(cwd));
   });
 });

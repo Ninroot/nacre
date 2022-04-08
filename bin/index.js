@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require('../built/index')
+require('../built/src/index')
