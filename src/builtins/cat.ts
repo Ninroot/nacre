@@ -1,6 +1,7 @@
 'use strict';
 
 import { appendFileSync, readFileSync, writeFileSync } from 'fs';
+import { filePathCompleter } from '../lib/pathCompleter';
 
 /**
  * Open file for reading.
@@ -12,6 +13,8 @@ const cat = (filePath: string): string => readFileSync(filePath, {
   flag: 'r',
 });
 
+cat.complete = [filePathCompleter];
+
 /**
  * Open file for reading but returns the contents of the file as an array of lines.
  * @param filePath - path of the file to be read.
@@ -20,13 +23,16 @@ const cat = (filePath: string): string => readFileSync(filePath, {
  */
 cat.lines = (filePath: string): string[] => cat(filePath).split(/\r?\n/);
 
+// @ts-ignore
+cat.lines.complete = [filePathCompleter];
+
 /**
  * Append the content to the file. Create the file if it does not exist.
  * @param filePath - path of the file to be appended.
  * @param content - content to append to the file.
  * @return - entire content of the file.
  */
-cat.append = (filePath: string, content: string) => {
+cat.append = (filePath: string, content: string): string => {
   appendFileSync(filePath, content, {
     encoding: 'utf8',
     flag: 'as+',
@@ -34,18 +40,24 @@ cat.append = (filePath: string, content: string) => {
   return cat(filePath);
 };
 
+// @ts-ignore
+cat.append.complete = [filePathCompleter];
+
 /**
  * Overwrites the content of the file. Create the file if it does not exist.
  * @param filePath - path of the file to be overwritten.
  * @param content - content to write in the file.
  * @return - entire content of the file.
  */
-cat.overwrite = (filePath: string, content: string) => {
+cat.overwrite = (filePath: string, content: string): string => {
   writeFileSync(filePath, content, {
     encoding: 'utf8',
     flag: 'w',
   });
   return content;
 };
+
+// @ts-ignore
+cat.overwrite.complete = [filePathCompleter];
 
 export = cat;
