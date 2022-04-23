@@ -6,6 +6,7 @@ import path = require("path");
 // design decision
 // when a filename is given to  ls, it will throw an error in order to:
 // distinguish a directory from a file within the directory (ex: foo vs foo/foo)
+// @exception An exception occurs if the file does not exist.
 const ls: any = (dirpath?: string) => {
   const p = dirpath || '.';
   const items = fs.readdirSync(p);

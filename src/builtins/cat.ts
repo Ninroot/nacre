@@ -1,33 +1,51 @@
 'use strict';
 
-import {appendFileSync, readFileSync, writeFileSync} from "fs";
-import {EOL} from "os";
+import { appendFileSync, readFileSync, writeFileSync } from 'fs';
 
-
-// Open file for reading. An exception occurs if the file does not exist.
-const cat = (filepath) => readFileSync(filepath, {
-    encoding: 'utf-8',
-    flag: 'r',
+/**
+ * Open file for reading.
+ * @param filePath - path of the file to be read.
+ * @return - the content of the file formatted in utf-8.
+ */
+const cat = (filePath: string): string => readFileSync(filePath, {
+  encoding: 'utf-8',
+  flag: 'r',
 });
 
-cat.lines = (filepath) => cat(filepath).split(EOL);
+/**
+ * Open file for reading but returns the contents of the file as an array of lines.
+ * @param filePath - path of the file to be read.
+ * @return - the content of the file formatted in utf-8 as an array of lines.
+ * @see cat
+ */
+cat.lines = (filePath: string): string[] => cat(filePath).split(/\r?\n/);
 
-// Open file for writing. The file is created (if it does not exist) or truncated (if it exists).
-cat.truncated = (filepath, string) => {
-    writeFileSync(filepath, string, {
-        encoding: 'utf8',
-        flag: 'w',
-    });
-    return string;
+/**
+ * Append the content to the file. Create the file if it does not exist.
+ * @param filePath - path of the file to be appended.
+ * @param content - content to append to the file.
+ * @return - entire content of the file.
+ */
+cat.append = (filePath: string, content: string) => {
+  appendFileSync(filePath, content, {
+    encoding: 'utf8',
+    flag: 'as+',
+  });
+  return cat(filePath);
 };
 
-// Appends in synchronous mode. The file is created if it does not exist.
-cat.append = (filepath, string) => {
-    appendFileSync(filepath, string, {
-        encoding: 'utf8',
-        flag: 'as+',
-    });
-    return cat(filepath);
+/**
+ * Overwrites the content of the file. Create the file if it does not exist.
+ * @param filePath - path of the file to be overwritten.
+ * @param content - content to write in the file.
+ * @return - entire content of the file.
+ */
+cat.overwrite = (filePath: string, content: string) => {
+  writeFileSync(filePath, content, {
+    encoding: 'utf8',
+    flag: 'w',
+  });
+  return content;
 };
 
 export = cat;

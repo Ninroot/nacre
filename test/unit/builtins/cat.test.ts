@@ -1,11 +1,10 @@
 'use strict';
 
-import {describe, it} from "mocha";
+import { describe, it } from 'mocha';
 
-import * as assert from 'assert/strict'
-import * as path from "path";
-import * as cat from "../../../src/builtins/cat";
-import { EOL } from 'os';
+import { assert } from 'chai';
+import * as path from 'path';
+import * as cat from '../../../src/builtins/cat';
 
 
 describe('cat unit test', () => {
@@ -13,20 +12,20 @@ describe('cat unit test', () => {
   const anotherFile = path.join(__dirname, 'fixtures', 'cat', 'another');
 
   it('cat file', () => {
-    assert.equal(cat(originalFile), `This is a${EOL}test file${EOL}`);
+    assert.equal(cat(originalFile), 'carriage return\ncarriage return and line feed\r\nend\n');
   });
 
   it('cat read file', () => {
-    assert.deepEqual(cat.lines(originalFile), ['This is a', 'test file', '']);
+    assert.deepEqual(cat.lines(originalFile), ['carriage return', 'carriage return and line feed', 'end', '']);
   });
 
   it('cat write file', () => {
-    assert.equal(cat.truncated(anotherFile, 'A test'), 'A test');
+    assert.equal(cat.overwrite(anotherFile, 'A test'), 'A test');
     assert.equal(cat(anotherFile), 'A test');
   });
 
   it('cat append file', () => {
-    assert.equal(cat.truncated(anotherFile, ''), '');
+    assert.equal(cat.overwrite(anotherFile, ''), '');
     assert.equal(cat.append(anotherFile, 'A'), 'A');
     assert.equal(cat.append(anotherFile, 'test'), 'Atest');
   });
