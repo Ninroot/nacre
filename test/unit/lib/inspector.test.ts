@@ -84,14 +84,14 @@ describe('inspector unit test', () => {
   });
 
   it('callFunctionOn', async () => {
-    const f = 'function foo(arg) { return arg; }';
-    const actual = await inspector.callFunctionOn(f, [{ value: 'abc' }]);
+    const f = 'function foo(a, b) { return a + b; }';
+    const actual = await inspector.callFunctionOn(f, [{ value: 'abc' }, { value: 'def' }]);
     assert.deepStrictEqual(
       actual,
       {
         result: {
           type: 'string',
-          value: 'abc',
+          value: 'abcdef',
         },
       },
     );

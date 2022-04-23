@@ -1,8 +1,8 @@
 'use strict';
 
-import {describe, after, before, it} from "mocha";
+import { describe, after, before, it } from 'mocha';
 import { execSync } from 'child_process';
-import assert = require('assert/strict');
+import { assert } from 'chai';
 
 let cwd;
 
@@ -16,7 +16,11 @@ after('restore current working directory', () => {
 
 describe('scripting unit test', () => {
   it('should import pwd builtin', () => {
-    const actual = execSync('node ./built/src/index.js ./test/unit/lib/fixtures/scripting/pwd.js', { cwd });
-    assert.ok(actual.toString().includes(cwd));
+    console.log('CWD:', cwd);
+    const actual = execSync(
+      'node ./built/src/index.js ./built/test/unit/lib/fixtures/scripting/pwd.js',
+      { cwd },
+    );
+    assert.include(actual.toString(), cwd);
   });
 });

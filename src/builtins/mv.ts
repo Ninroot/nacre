@@ -1,6 +1,7 @@
 import stat = require('./stat');
 import path = require('path');
 import { renameSync } from 'fs';
+import { itemPathCompleter, dirPathCompleter } from '../lib/pathCompleter';
 
 /**
  * @property oldPath - old path of the moved item
@@ -34,5 +35,7 @@ const mv = function (itemPath: string, dirPath: string): MovedItem {
   }
   throw new Error(`Item already exists in the destination directory: ${newPath}.`);
 };
+
+mv.complete = [itemPathCompleter, dirPathCompleter];
 
 export = mv;

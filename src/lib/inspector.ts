@@ -1,11 +1,14 @@
 'use strict';
 
+import { Runtime, Session } from 'inspector';
+
 require('../global');
 import inspector = require('inspector');
 import path = require('path');
 
 export default class Inspector {
-  private session;
+  private session: Session;
+
   private remoteGlobal;
 
   constructor() {
@@ -37,20 +40,16 @@ export default class Inspector {
   getRemoteGlobal() {
     return this.post('Runtime.evaluate', {
       expression: 'globalThis',
-    })
-      .then((value) => value.result);
+    }).then((value) => value.result);
   }
 
-  getGlobalNames() {
+  getGlobalNames(): Promise<string[]> {
     return Promise.all([
-      this.post('Runtime.globalLexicalScopeNames', undefined)
-        .then((r) => r.names),
+      this.post('Runtime.globalLexicalScopeNames', undefined).then((r) => r.names),
       this.post('Runtime.getProperties', {
         objectId: this.remoteGlobal.objectId,
-      })
-        .then((r) => r.result.map((p) => p.name)),
-    ])
-      .then((r) => r.flat());
+      }).then((r) => r.result.map((p) => p.name)),
+    ]).then((r) => r.flat());
   }
 
   loadModule(moduleAbsPath) {
@@ -80,6 +79,13 @@ export default class Inspector {
     });
   }
 
+  getProperties(objectId: string): Runtime.GetPropertiesReturnType {
+    return this.post('Runtime.getProperties', {
+      objectId,
+      generatePreview: true,
+    });
+  }
+
   async execute(line) {
     const {
       result,
@@ -102,7 +108,7 @@ export default class Inspector {
     return `${uncaught ? 'Uncaught ' : ''}${inspected.value}`;
   }
 
-  callFunctionOn(f, args) {
+  callFunctionOn(f, args): Runtime.CallFunctionOnReturnType {
     return this.post('Runtime.callFunctionOn', {
       executionContextId: 1,
       functionDeclaration: f,

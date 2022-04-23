@@ -2,4 +2,6 @@
 
 import npm = require('./npm');
 
-export = npm;
+export {
+  npm,
+};

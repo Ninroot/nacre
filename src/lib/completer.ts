@@ -2,9 +2,14 @@
 
 import acorn = require('acorn-loose');
 import walk = require('acorn-walk');
-import fs = require('fs');
 import path = require('./path');
-import Inspector from "./inspector";
+import Inspector from './inspector';
+import { Completion, itemPathCompleter } from './pathCompleter';
+
+type Context = {
+  completion?: Completion;
+  signature?: string;
+};
 
 export default class Completer {
   private runner: Inspector;
@@ -13,13 +18,10 @@ export default class Completer {
     this.runner = runner;
   }
 
-  async complete(source, cursor?) {
+  async complete(source, cursor?: number): Promise<Context | undefined> {
     if (!source) {
-      return {
-        completions: await this.runner.getGlobalNames(),
-        originalSubstring: '',
-        fillable: true,
-      };
+      const globalNames = await this.runner.getGlobalNames();
+      return { completion: [globalNames, ''] };
     }
     // cursor can be at position 0
     if (cursor === undefined || cursor === null) {
@@ -27,7 +29,7 @@ export default class Completer {
     }
 
     const root = acorn.parse(source, { ecmaVersion: 2020 });
-    // Node does not have all properties defined in the d.ts
+    // Acorn does not define all Node properties in the d.ts
     // https://github.com/acornjs/acorn/issues/741
     const node: any = walk.findNodeAround(root, cursor).node;
 
@@ -39,54 +41,85 @@ export default class Completer {
       if (cursor === node.start || (cursor === node.end && this.isCompletedString(node.raw))) {
         return undefined;
       }
+
+      const callExpression = this.findParent(root, this.findParent(root, node));
+      if (callExpression && callExpression.type === 'CallExpression') {
+        const callArguments = callExpression.arguments;
+        const argAtCursor = callArguments.find((arg) => arg.start <= cursor && cursor <= arg.end);
+        const argNumber = callExpression.arguments.indexOf(argAtCursor);
+        if (argAtCursor && argAtCursor.type === 'Literal') {
+          const callee = source.slice(callExpression.callee.start, callExpression.callee.end);
+          const completeFunction = `function f(str, argNumber) { return JSON.stringify(${callee}.complete[argNumber](str)) }`;
+          const funRes = await this.runner.callFunctionOn(completeFunction, [{ value: node.value }, { value: argNumber }]);
+          if (funRes.result && funRes.result.subtype !== 'error') {
+            const jsonRes = JSON.parse(funRes.result.value);
+            return { completion: jsonRes };
+          }
+        }
+      }
+
       const itemPath = path.normalizeCurrent(cursor === node.start + 1 ? '' : node.value);
-      const matchingPaths = this.completePath(itemPath);
-      const trailingItemPath = itemPath.slice(-1)[0] === '/' ? '' : path.basename(itemPath);
-      return {
-        completions: this.removePrefix(matchingPaths, itemPath),
-        originalSubstring: trailingItemPath,
-        fillable: true,
-      };
+      return { completion: itemPathCompleter(itemPath) };
     }
     if (node.type === 'Identifier') {
       const identifierName = node.name.slice(0, cursor);
       await this.loadModule(node.name);
       const matchingIdentifier = await this.completeIdentifier(identifierName);
       if (matchingIdentifier.length > 0) {
-        return {
-          completions: this.removePrefix(matchingIdentifier, identifierName),
-          originalSubstring: identifierName,
-          fillable: true,
-        };
+        return { completion: [matchingIdentifier, identifierName] };
       }
-      return undefined;
     }
-    if (node.type === 'MemberExpression') {
-      if (node.computed) {
-        return undefined;
-      }
+    if (node.type === 'MemberExpression' && !node.computed) {
       const { property } = node;
       const matchingProperties = await this.completeProperties(node, source, cursor);
       const propName = (cursor === property.start || property.name === '✖') ? '' : property.name;
-      return {
-        completions: this.removePrefix(matchingProperties, propName),
-        originalSubstring: propName,
-        fillable: true,
-      };
+      return { completion: [matchingProperties, propName] };
     }
     if (node.type === 'CallExpression' || node.type === 'NewExpression') {
-      if (source[node.end - 1] === ')') {
-        return undefined;
-      }
-      const matchingFunctions = await this.completeFunction(source, node);
-      if (matchingFunctions) {
-        return {
-          completions: [matchingFunctions],
-          fillable: false,
-        };
+      if (source[node.end - 1] !== ')') {
+        const matchingFunctions = await this.completeFunction(source, node);
+        if (matchingFunctions) {
+          return { signature: matchingFunctions };
+        }
       }
     }
 
+    return undefined;
+  }
+
+  /**
+   * Recursively traverse the rootObject to find the parent of childObject.
+   * @param rootObject - root object to inspect
+   * @param childObject - child object to match
+   * @returns - parent object of child if exists, undefined otherwise
+   */
+  findParent(rootObject, childObject) {
+    if (!(rootObject && typeof rootObject === 'object')) {
+      return undefined;
+    }
+    if (Array.isArray(rootObject)) {
+      for (let i = 0; i < rootObject.length; i++) {
+        if (rootObject[i] === childObject) {
+          return rootObject;
+        }
+        const child = this.findParent(rootObject[i], childObject);
+        if (child) {
+          return child;
+        }
+      }
+    } else {
+      const keys = Object.keys(rootObject);
+      for (let i = 0; i < keys.length; i += 1) {
+        const key = keys[i];
+        if (rootObject[key] === childObject) {
+          return rootObject;
+        }
+        const child = this.findParent(rootObject[key], childObject);
+        if (child) {
+          return child;
+        }
+      }
+    }
     return undefined;
   }
 
@@ -103,39 +136,6 @@ export default class Completer {
     return array.filter((e) => e.startsWith(prefix))
       .map((withPrefix) => withPrefix.slice(prefix.length))
       .filter((withoutPrefix) => withoutPrefix !== '');
-  }
-
-  completePath(line) {
-    const isDir = line.slice(-1) === '/';
-    const dirname = isDir ? line : path.dirname(line);
-
-    let items;
-    try {
-      items = fs.readdirSync(dirname);
-    } catch {
-      items = [];
-    }
-
-    const hits = items.filter((item) => {
-      const baseItem = path.basename(item);
-      const baseLine = path.basename(line);
-      return baseItem.startsWith(baseLine);
-    });
-
-    if (line.length > 1 && !isDir) {
-      items = [];
-    }
-
-    if (hits.length === 1) {
-      const hit = path.join(dirname, hits[0]);
-      if (fs.statSync(hit)
-        .isDirectory()) {
-        hits[0] = path.join(hits[0], '/');
-      }
-    }
-
-    const completions = hits.length ? hits : items;
-    return completions.map((e) => path.join(dirname, e));
   }
 
   async completeIdentifier(id) {
@@ -180,7 +180,7 @@ export default class Completer {
     return properties.map((p) => p.name);
   }
 
-  async completeFunction(line, expression) {
+  async completeFunction(line, expression): Promise<string | undefined> {
     const callee = line.slice(expression.callee.start, expression.callee.end);
     const {
       result,
@@ -198,7 +198,7 @@ export default class Completer {
       [result, { value: expression }, { value: line }],
     );
     if (annotation.type === 'string') {
-      return annotation.value;
+      return annotation.value as string;
     }
     return undefined;
   }

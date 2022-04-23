@@ -1,17 +1,17 @@
 'use strict';
 
-import {after, afterEach, before, beforeEach, describe, it} from "mocha";
+import { after, afterEach, before, beforeEach, describe, it } from 'mocha';
 import Completer from '../../../src/lib/completer';
 import Inspector from '../../../src/lib/inspector';
 
-import assert = require('assert/strict');
+import { assert } from 'chai';
 import path = require('path');
 import { cd } from '../../../src/builtins';
 
 const windows = process.platform === 'win32';
 
-let runner;
-let completer;
+let runner: Inspector;
+let completer: Completer;
 
 let cwd;
 
@@ -49,20 +49,19 @@ describe('completer unit test', () => {
   });
 
   it('No source', async () => {
-    const { completions } = await completer.complete();
-    ['global', 'Array', '__proto__', 'require']
-      .forEach((prop) => assert.ok(completions.includes(prop), `should include ${prop}`));
+    const { completion } = await completer.complete(undefined);
+    ['global', 'Array', '__proto__', 'require'].forEach((e) => assert.include(completion[0], e));
+    assert.equal(completion[1], '');
   });
 
   it('"|', async () => {
-    const { completions } = await completer.complete('"');
-    ['dire1', 'dire2', 'file1.md', 'file2.md']
-      .forEach((file) => assert.ok(completions.includes(file), `should include ${file}`));
+    const { completion } = await completer.complete('"');
+    ['dire1', 'dire2', 'file1.md', 'file2.md'].forEach((file) => assert.include(completion[0], file));
   });
 
   it('number 123|', async () => {
-    const res = await completer.complete('123');
-    assert.equal(res, undefined);
+    const actual = await completer.complete('123');
+    assert.equal(actual, undefined);
   });
 
   it('thisShouldBeUnknown|', async () => {
@@ -71,65 +70,48 @@ describe('completer unit test', () => {
   });
 
   it('1 < 2|', async () => {
-    assert.equal(
-      await completer.complete('1 < 2'),
-      undefined,
-    );
+    const actual = await completer.complete('1 < 2');
+    assert.equal(actual, undefined);
   });
 
   it('a = { [computed]: 1 }|', async () => {
-    assert.equal(
-      await completer.complete('a = { [computed]: 1 }'),
-      undefined,
-    );
+    const actual = await completer.complete('a = { [computed]: 1 }');
+    assert.equal(actual, undefined);
   });
 
   it('a[1]|', async () => {
-    assert.equal(
-      await completer.complete('a[1]'),
-      undefined,
-    );
+    const actual = await completer.complete('a[1]');
+    assert.equal(actual, undefined);
   });
 
   it('namedFun(x) { return x}|', async () => {
-    assert.equal(
-      await completer.complete('function namedFun(x) { return x}'),
-      undefined,
-    );
+    const actual = await completer.complete('function namedFun(x) { return x}');
+    assert.equal(actual, undefined);
   });
 
   it('"|"', async () => {
-    const { completions } = await completer.complete('""', 1);
-    ['dire1', 'dire2', 'file1.md', 'file2.md']
-      .forEach((file) => assert.ok(completions.includes(file), `should include ${file}`));
+    const { completion } = await completer.complete('""', 1);
+    ['dire1', 'dire2', 'file1.md', 'file2.md'].forEach((file) => assert.include(completion[0], file));
   });
 
   it('|"di"', async () => {
-    const res = await completer.complete('"di"', 0);
-    assert.equal(res, undefined);
+    const actual = await completer.complete('"di"', 0);
+    assert.equal(actual, undefined);
   });
 
   it('"di|"', async () => {
-    const actual = await completer.complete('"di"', 3);
-    assert.deepStrictEqual(
-      actual,
-      {
-        completions: ['re1', 're2'],
-        originalSubstring: 'di',
-        fillable: true,
-      },
-    );
+    const { completion } = await completer.complete('"di"', 3);
+    assert.deepStrictEqual(completion, [['dire1', 'dire2'], 'di']);
   });
 
   it('"./|"', async () => {
-    const { completions } = await completer.complete('"./"', 3);
-    ['dire1', 'dire2', 'file1.md', 'file2.md']
-      .forEach((file) => assert.ok(completions.includes(file), `should include ${file}`));
+    const { completion } = await completer.complete('"./"', 3);
+    ['dire1', 'dire2', 'file1.md', 'file2.md'].forEach((file) => assert.include(completion[0], file));
   });
 
   it('"./dir|"', async () => {
-    const { completions } = await completer.complete('"./dir"', 6);
-    assert.deepEqual(completions, ['e1', 'e2']);
+    const { completion } = await completer.complete('"./dir"', 6);
+    assert.deepStrictEqual(completion, [['dire1', 'dire2'], 'dir']);
   });
 
   it('ls("dire1/"|', async () => {
@@ -138,129 +120,132 @@ describe('completer unit test', () => {
   });
 
   it('"|whatever"', async () => {
-    const { completions } = await completer.complete('"whatever"', 1);
-    ['dire1', 'dire2', 'file1.md', 'file2.md']
-      .forEach((file) => assert.ok(completions.includes(file), `should include ${file}`));
+    const { completion } = await completer.complete('"whatever"', 1);
+    ['dire1', 'dire2', 'file1.md', 'file2.md'].forEach((file) => assert.include(completion[0], file));
   });
 
   it('con|', async () => {
-    const actual = await completer.complete('con');
-    assert.deepEqual(
-      actual,
-      {
-        completions: ['text', 'sole', 'structor'],
-        originalSubstring: 'con',
-        fillable: true,
-      },
-    );
+    const { completion } = await completer.complete('con');
+    ['console', 'constructor'].forEach((e) => assert.include(completion[0], e));
+    assert.strictEqual(completion[1], 'con');
   });
 
   it('console.|', async () => {
-    const { completions } = await completer.complete('console.');
-    ['log', 'dir', 'warn', '__proto__']
-      .forEach((prop) => assert.ok(completions.includes(prop), `should include ${prop}`));
+    const { completion } = await completer.complete('console.');
+    ['log', 'dir', 'warn', '__proto__'].forEach((e) => assert.include(completion[0], e));
+    assert.strictEqual(completion[1], '');
   });
 
   it('console.l|', async () => {
-    const actual = await completer.complete('console.l');
-    assert.deepEqual(
-      actual,
-      {
-        completions: ['og'],
-        originalSubstring: 'l',
-        fillable: true,
-      },
-    );
+    const { completion } = await completer.complete('console.l');
+    ['log'].forEach((e) => assert.include(completion[0], e));
+    assert.strictEqual(completion[1], 'l');
   });
 
   it('console.log|', async () => {
-    const actual = await completer.complete('console.log');
-    assert.deepEqual(
-      actual,
-      {
-        completions: [],
-        originalSubstring: 'log',
-        fillable: true,
-      },
-    );
+    const { completion } = await completer.complete('console.log');
+    ['log'].forEach((e) => assert.include(completion[0], e));
+    assert.strictEqual(completion[1], 'log');
   });
 
   it('global.console.lo|', async () => {
-    const actual = await completer.complete('global.console.lo');
-    assert.deepStrictEqual(
-      actual,
-      {
-        completions: ['g'],
-        fillable: true,
-        originalSubstring: 'lo',
-      },
-    );
+    const { completion } = await completer.complete('global.console.lo');
+    ['log'].forEach((e) => assert.include(completion[0], e));
+    assert.strictEqual(completion[1], 'lo');
   });
 
   it('console.|log', async () => {
-    const { completions } = await completer.complete('console.log', 8);
-    ['log', 'dir', 'warn', '__proto__']
-      .forEach((prop) => assert.ok(completions.includes(prop), `should include ${prop}`));
+    const { completion } = await completer.complete('console.log', 8);
+    ['log', 'dir', 'warn', '__proto__'].forEach((e) => assert.include(completion[0], e));
+    assert.strictEqual(completion[1], '');
   });
 
   it('con|sole.log', async () => {
-    const actual = await completer.complete('con');
-    assert.deepEqual(
-      actual,
-      {
-        completions: ['text', 'sole', 'structor'],
-        originalSubstring: 'con',
-        fillable: true,
-      },
-    );
+    const { completion } = await completer.complete('con');
+    ['console', 'constructor'].forEach((e) => assert.include(completion[0], e));
+    assert.strictEqual(completion[1], 'con');
   });
 
-  // eslint-disable-next-line func-names
+  // FIXME very slow
   it('console.log(|', async function () {
     if (windows) {
       // FIXME: should work
       this.skip();
     }
-    const actual = await completer.complete('console.log(');
-    assert.deepStrictEqual(
-      actual,
-      {
-        completions: ['...data'],
-        fillable: false,
-      },
-    );
+    const { signature } = await completer.complete('console.log(');
+    assert.strictEqual(signature, '...data');
   });
 
-  // eslint-disable-next-line func-names
   it('new Number(|', async function () {
     if (windows) {
       // FIXME: should work
       this.skip();
     }
-    const actual = await completer.complete('new Number(');
-    assert.deepStrictEqual(
-      actual,
-      {
-        completions: ['?value'],
-        fillable: false,
-      },
-    );
+    const { signature } = await completer.complete('new Number(');
+    assert.strictEqual(signature, '?value');
   });
 
   it('console.log()', async () => {
-    const res = await completer.complete('console.log()');
-    assert.equal(res, undefined);
+    const actual = await completer.complete('console.log()');
+    assert.equal(actual, undefined);
   });
 
   it('console.log("di|")', async () => {
-    const actual = await completer.complete('console.log("di")', 15);
-    assert.deepStrictEqual(
-      actual,
-      {
-        completions: ['re1', 're2'],
-        originalSubstring: 'di',
-        fillable: true,
-      },
-    );
+    const { completion } = await completer.complete('console.log("di")', 15);
+    assert.deepStrictEqual(completion, [['dire1', 'dire2'], 'di']);
+  });
+
+  it('mv("|", "")', async () => {
+    // 1st argument of mv should complete all items
+    const { completion } = await completer.complete('mv("", "")', 4);
+    assert.deepStrictEqual(completion, [['dire1', 'dire2', 'file1.md', 'file2.md'], '']);
+  });
+
+  it('mv("", "|")', async () => {
+    // 2nd argument of mv should complete only directory
+    const { completion } = await completer.complete('mv("", "")', 8);
+    assert.deepStrictEqual(completion, [['dire1', 'dire2'], '']);
+  });
+
+
+  describe('test findParent', () => {
+    it('nominal', () => {
+      const obj = {
+        l1: { l11: { l111: ['a', 'b', 'c'] } },
+        l2: { l21: ['a', 1, {}], l22: 123 },
+        l3: [ { l33: {} } ],
+      };
+      assert.equal(completer.findParent(obj, obj.l1), obj);
+      assert.equal(completer.findParent(obj, obj.l1.l11), obj.l1);
+      assert.equal(completer.findParent(obj, obj.l2), obj);
+      assert.equal(completer.findParent(obj, obj.l2.l21), obj.l2);
+      assert.equal(completer.findParent(obj, obj.l2.l22), obj.l2);
+      assert.equal(completer.findParent(obj, obj.l3[0]), obj.l3);
+      assert.equal(completer.findParent(obj, obj.l3[0].l33), obj.l3[0]);
+    });
+
+    it('child does not belong to root', () => {
+      const obj = {
+        l1: { },
+        l2: { },
+      };
+      const child = {};
+
+      assert.equal(
+        completer.findParent(obj, child),
+        undefined);
+    });
+
+    it('parent of root', () => {
+      const obj = {
+        l1: { },
+        l2: { },
+      };
+
+      assert.equal(
+        completer.findParent(obj, obj),
+        undefined);
+    });
   });
 });
+

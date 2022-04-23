@@ -2,14 +2,15 @@
 
 'use strict';
 
-import {clearScreenDown, createInterface} from "readline";
-
+import * as readline from 'node:readline';
 import chalk = require('chalk');
+
 import getHistory = require('../history');
 import Completer from './completer';
 import Inspector from './inspector';
 import highlight = require('../highlight');
 import { underlineIgnoreANSI } from '../util';
+import { Completion } from './pathCompleter';
 
 const pairs = {
   '(': ')',
@@ -23,28 +24,39 @@ const pairs = {
 const backspace = '\x7F';
 
 export default class Repl {
-  private input: any;
-  private output: any;
-  private prompt: any;
-  private rl: any;
-  private inspector: Inspector;
+  private readonly input: any;
+
+  private readonly output: any;
+
+  private readonly prompt: any;
+
+  private readonly rl;
+
+  private readonly inspector: Inspector;
+
   private nextCtrlCKills: boolean;
+
   private mode: string;
+
   private completionCache: undefined;
+
   private completer: Completer;
+
   private history: any;
+
   private refreshLineParent: any;
+
   private ttyWriteParent: any;
 
   constructor(input, output, prompt) {
     this.input = input;
     this.output = output;
     this.prompt = prompt;
-    this.rl = createInterface({
+    this.rl = readline.createInterface({
       input: this.input,
       output: this.output,
       prompt: this.prompt,
-      completer: (line, cb) => this.complete(line, cb),
+      completer: (line, cb) => this.completeCallback(line, cb),
     });
     this.inspector = new Inspector();
     this.nextCtrlCKills = false;
@@ -65,8 +77,17 @@ export default class Repl {
 
     this.ttyWriteParent = this.rl._ttyWrite.bind(this.rl);
     this.rl._ttyWrite = (seq, key) => this.ttyWrite(seq, key);
+  }
 
-    this.rl._insertString = (string) => this.insertString(string);
+  highlight(line: string) {
+    const prevCursorPos = this.rl.getCursorPos();
+    // highlight line "console" => "[36mconsole[39m"
+    this.rl.line = highlight(line);
+    // refresh to display the line highlighted
+    this.refreshLineParent();
+    // reset internal line without highlight
+    this.rl.line = line;
+    this.output.cursorTo(prevCursorPos.cols);
   }
 
   refreshLine() {
@@ -76,7 +97,7 @@ export default class Repl {
     if (this.mode === 'REVERSE') {
       this.output.moveCursor(0, -1);
       this.output.cursorTo(this.prompt.length);
-      clearScreenDown(this.output);
+      this.output.clearScreenDown();
       let match;
       if (inspectedLine) {
         match = this.rl.history.find((h) => h.includes(inspectedLine));
@@ -90,35 +111,30 @@ export default class Repl {
       return;
     }
 
-    this.rl.line = highlight(inspectedLine);
-    this.refreshLineParent();
-    this.rl.line = inspectedLine;
+    this.highlight(inspectedLine);
 
     if (inspectedLine !== '') {
       this.output.cursorTo(this.prompt.length + this.rl.line.length);
-      clearScreenDown(this.output);
+      this.output.clearScreenDown();
       this.output.cursorTo(this.prompt.length + this.rl.cursor);
 
       Promise.all([
         this.completer.complete(inspectedLine),
         this.inspector.preview(inspectedLine),
       ])
-        .then(([completion, preview]) => {
+        .then(([context, preview]) => {
           if (this.rl.line !== inspectedLine) {
             return;
           }
-          if (completion && completion.completions.length > 0) {
-            if (completion.fillable) {
-              ([this.completionCache] = completion.completions);
-            }
+          if (context && context.signature) {
             this.output.cursorTo(this.prompt.length + this.rl.line.length);
-            this.output.write(chalk.grey(completion.completions[0]));
+            this.output.write(chalk.grey(context.signature));
           }
           if (preview) {
             this.output.write(`\n${chalk.grey(preview.slice(0, this.output.columns - 1))}`);
             this.output.moveCursor(0, -1);
           }
-          if (completion || preview) {
+          if (context || preview) {
             this.output.cursorTo(this.prompt.length + this.rl.cursor);
           }
         })
@@ -135,38 +151,48 @@ export default class Repl {
   }
 
   ttyWrite(char, key) {
+    const writeKeystroke = this.handleKeystroke(char, key);
+    if (writeKeystroke) {
+      this.ttyWriteParent(char, key);
+    }
+    if (key.name !== 'return') {
+      this.refreshLine();
+    }
+  }
+
+  /**
+   * @return true if char must be written
+   */
+  handleKeystroke(char, key): boolean {
     if (!(key.ctrl && key.name === 'c')) {
       this.nextCtrlCKills = false;
     }
 
     if (Object.keys(pairs).includes(key.sequence)) {
-      this.insertString(key.sequence);
       const prev = this.previousChar();
       const next = this.nextChar();
       const opening = key.sequence;
       const according = pairs[key.sequence];
       if ((prev === opening && next === according) || next !== according) {
-        this.insertString(according);
-        this.rl.cursor -= 1;
+        this.insertString(opening + according);
+        this.rl.cursor--;
       }
-      this.refreshLine();
-      return;
+      return false;
     }
 
     if (char === backspace) {
       const prev = this.previousChar();
       const next = this.nextChar();
       if (Object.keys(pairs).includes(prev) && pairs[prev] === next) {
-        this.removeString(this.rl.cursor - 1, this.rl.cursor + 1);
-        return;
+        this.removeString(this.rl.cursor, this.rl.cursor + 1);
       }
+      return true;
     }
 
     if (key.ctrl && key.name === 'r' && this.mode === 'NORMAL') {
       this.mode = 'REVERSE';
       this.output.write('\n');
-      this.refreshLine();
-      return;
+      return false;
     }
 
     if (key.name === 'return' && this.mode === 'REVERSE') {
@@ -178,16 +204,17 @@ export default class Repl {
       this.rl.cursor = match.indexOf(this.rl.line) + this.rl.line.length;
       this.rl.line = match;
       this.refreshLine();
-      return;
+      return false;
     }
-
-    this.ttyWriteParent(char, key);
 
     if (key.name === 'right' && this.rl.cursor === this.rl.line.length) {
       if (this.completionCache) {
         this.insertString(this.completionCache);
       }
+      return false;
     }
+
+    return true;
   }
 
   insertString(string) {
@@ -195,7 +222,6 @@ export default class Repl {
     const end = this.rl.line.slice(this.rl.cursor, this.rl.line.length);
     this.rl.line = beg + string + end;
     this.rl.cursor += string.length;
-    this.refreshLine();
   }
 
   removeString(beg, end) {
@@ -204,7 +230,6 @@ export default class Repl {
     this.rl.line = prefix + suffix;
     this.rl.cursor = prefix.length;
     this.output.cursorTo(prefix.length);
-    this.refreshLine();
   }
 
   quit() {
@@ -225,19 +250,16 @@ export default class Repl {
     }
   }
 
-  complete(line, cb) {
-    return this.completer.complete(line)
-      .then((result) => {
-        if (result && result.fillable && result.originalSubstring !== undefined) {
-          cb(null, [(result.completions || [])
-            .map((l) => result.originalSubstring + l), result.originalSubstring]);
-        } else {
-          cb(null, [[], line]);
-        }
-      })
-      .catch(() => {
-        cb(null, [[], line]);
-      });
+  completeCallback(line, callback) {
+    this.completePromise(line)
+      .then((completion) => callback(null, completion))
+      .catch(() => callback(null, [[], line]));
+  }
+
+  completePromise(line): Promise<Completion> {
+    return this.completer
+      .complete(line)
+      .then((context) => context.completion);
   }
 
   async exec(line) {
@@ -277,7 +299,7 @@ export default class Repl {
     this.rl.prompt();
     for await (const line of this.rl) {
       this.rl.pause();
-      clearScreenDown(this.output);
+      this.output.clearScreenDown();
       await this.exec(line);
       this.rl.prompt();
     }

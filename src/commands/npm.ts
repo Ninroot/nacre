@@ -2,21 +2,36 @@
 
 const fetch = require('./fetch');
 
-const npm:any = {};
+interface Npm {
+  /**
+   * Install npm package
+   * @param {string} packageName
+   */
+  install(packageName: string);
 
-/**
- * Install npm package
- * @param {string} packageName
- */
-npm.install = (packageName) => fetch('npm.router.js', '/install', { packageName });
+  /**
+   * Uninstall npm package
+   * @param {string} packageName
+   * @param option
+   *   save: boolean
+   * }}[options]
+   */
+  uninstall(packageName: string, option: any);
+}
 
-/**
- * Uninstall npm package
- * @param {string} packageName
- * @param {{
- *   save: boolean
- * }}[options]
- */
-npm.uninstall = (packageName, options) => fetch('npm.router.js', '/uninstall', { packageName, options });
+const install = (packageName: string) => {
+  fetch('npm.router.js', '/install', {packageName});
+};
+
+install.complete = () => {
+  return ['acorn', 'nacre'];
+};
+
+const npm: Npm = {
+  install,
+  uninstall: (packageName, options) => {
+    fetch('npm.router.js', '/uninstall', {packageName, options});
+  },
+};
 
 export = npm;

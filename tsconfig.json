@@ -5,10 +5,16 @@
     "target": "es2021",
     "module": "CommonJS",
     "moduleResolution": "Node",
-    "declaration": true
+    "declaration": true,
+    // to ignore node_modules
+    "skipLibCheck": true
   },
   "include": [
     "./src/**/*.ts",
     "./test/**/*.ts",
+  ],
+  "exclude": [
+    "./node_modules/**/*.js",
+    "./node_modules/**/*.ts"
   ]
 }
