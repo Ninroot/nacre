@@ -1,29 +1,45 @@
 'use strict';
 
 import os = require('os');
+import { dirPathCompleter } from '../lib/pathCompleter';
 
 let flip = os.homedir();
 
-const cd: any = (path) => {
+/**
+ * Change the working directory of the Node.js process for the new directory location.
+ * @param dirPath - path of the new directory location. If not provided, equivalent to `cd.home()`.
+ * @return path of the new directory location.
+ * @see cd.home
+ */
+const cd = (dirPath?: string): string => {
   flip = process.cwd();
 
-  if (!path) {
+  if (!dirPath) {
     return cd.home();
   }
 
   try {
-    process.chdir(path || '.');
+    process.chdir(dirPath || '.');
     return process.cwd();
   } catch (err) {
     return err;
   }
 };
-cd.help = 'Change directory';
 
-cd.home = () => cd(os.homedir());
-cd.home.help = 'Brings you in your home directory';
+cd.complete = [dirPathCompleter];
 
-cd.previous = () => cd(flip);
-cd.previous.help = 'Brings you back to your previous location';
+/**
+ * Change the working directory to current user's home directory.
+ * @return path of the new directory location.
+ * @see cd
+ * @see os.homedir
+ */
+cd.home = (): string => cd(os.homedir());
+
+/**
+ * Change the working directory to previous user directory.
+ * @return path of the new directory location.
+ */
+cd.previous = (): string => cd(flip);
 
 export = cd;
