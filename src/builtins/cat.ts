@@ -1,7 +1,7 @@
 'use strict';
 
 import { appendFileSync, readFileSync, writeFileSync } from 'fs';
-import { filePathCompleter } from '../lib/pathCompleter';
+import { itemPathCompleter } from '../lib/pathCompleter';
 
 /**
  * Open file for reading.
@@ -13,7 +13,7 @@ const cat = (filePath: string): string => readFileSync(filePath, {
   flag: 'r',
 });
 
-cat.complete = [filePathCompleter];
+cat.complete = [itemPathCompleter];
 
 /**
  * Open file for reading but returns the contents of the file as an array of lines.
@@ -24,7 +24,7 @@ cat.complete = [filePathCompleter];
 cat.lines = (filePath: string): string[] => cat(filePath).split(/\r?\n/);
 
 // @ts-ignore
-cat.lines.complete = [filePathCompleter];
+cat.lines.complete = [itemPathCompleter];
 
 /**
  * Append the content to the file. Create the file if it does not exist.
@@ -41,7 +41,7 @@ cat.append = (filePath: string, content: string): string => {
 };
 
 // @ts-ignore
-cat.append.complete = [filePathCompleter];
+cat.append.complete = [itemPathCompleter];
 
 /**
  * Overwrites the content of the file. Create the file if it does not exist.
@@ -58,6 +58,6 @@ cat.overwrite = (filePath: string, content: string): string => {
 };
 
 // @ts-ignore
-cat.overwrite.complete = [filePathCompleter];
+cat.overwrite.complete = [itemPathCompleter];
 
 export = cat;
