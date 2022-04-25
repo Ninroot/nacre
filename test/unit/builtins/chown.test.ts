@@ -1,10 +1,10 @@
 'use strict';
 
-import {before, describe, it} from "mocha";
-import * as assert from 'assert/strict'
-import * as path from "path";
+import { before, describe, it } from 'mocha';
+import { assert } from 'chai';
+import * as path from 'path';
 
-import stat = require("../../../src/builtins/stat");
+import stat = require('../../../src/builtins/stat');
 
 describe('chown unit test', () => {
   let chown;
@@ -27,13 +27,13 @@ describe('chown unit test', () => {
 
   it('chown file', () => {
     const actual = chown(testFile);
-    assert.ok(actual.owner.length > 0);
+    assert.ok(actual.user.length > 0);
     assert.ok(actual.group.length > 0);
   });
 
   it('chown get file', () => {
     const actual = chown.get(testFile);
-    assert.ok(actual.owner.length > 0);
+    assert.ok(actual.user.length > 0);
     assert.ok(actual.group.length > 0);
   });
 
@@ -43,7 +43,7 @@ describe('chown unit test', () => {
       group,
     } = stat(testFile);
     const actual = chown.set(testFile, owner, group);
-    assert.equal(actual.owner, owner);
+    assert.equal(actual.user, owner);
     assert.equal(actual.group, group);
   });
 

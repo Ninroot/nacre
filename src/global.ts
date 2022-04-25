@@ -7,6 +7,9 @@ global.module = module;
 global.require = require;
 global.util = require('util');
 
+// list of builtins to be excluded from some OS
+const excluded = process.platform === 'win32' ? ['chmod', 'chown'] : [];
+
 Object.defineProperty(globalThis, '_', {
   value: undefined,
   writable: true,
@@ -22,6 +25,7 @@ Object.defineProperty(globalThis, '_err', {
 });
 
 Object.keys(builtins)
+  .filter(builtin => !excluded.includes(builtin))
   .forEach((builtin) => {
     global[builtin] = builtins[builtin];
   });

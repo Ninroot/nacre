@@ -1,11 +1,11 @@
 'use strict';
 
 import { after, afterEach, before, beforeEach, describe, it } from 'mocha';
-import Completer from '../../../src/lib/completer';
-import Inspector from '../../../src/lib/inspector';
-
 import { assert } from 'chai';
 import path = require('path');
+
+import Completer from '../../../src/lib/completer';
+import Inspector from '../../../src/lib/inspector';
 import { cd } from '../../../src/builtins';
 
 const windows = process.platform === 'win32';
