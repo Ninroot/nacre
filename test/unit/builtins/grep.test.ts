@@ -1,8 +1,8 @@
 'use strict';
 
-import {describe, it} from "mocha";
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 
-import * as assert from 'assert/strict'
 import grep = require('../../../src/builtins/grep');
 
 describe('grep test', () => {
@@ -17,8 +17,6 @@ describe('grep test', () => {
   });
 
   it('grep throws', () => {
-    assert.throws(() => grep(), {
-      message: 'Regex required',
-    });
+    assert.throws(() => grep(undefined), 'Regex required');
   });
 });
