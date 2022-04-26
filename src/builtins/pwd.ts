@@ -2,7 +2,10 @@
 
 import process = require('process');
 
-const pwd = () => process.cwd();
-pwd.help = 'Return current working directory. Alias of process.cwd()';
+/**
+ * Return current working directory. Alias of process.cwd().
+ * @see process.cwd.
+ */
+const pwd = (): string => process.cwd();
 
 export = pwd;
