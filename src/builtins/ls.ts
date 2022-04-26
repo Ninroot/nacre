@@ -1,20 +1,29 @@
 'use strict';
 
-import fs = require("fs");
-import path = require("path");
+import fs = require('fs');
+import path = require('path');
 
-// design decision
-// when a filename is given to  ls, it will throw an error in order to:
-// distinguish a directory from a file within the directory (ex: foo vs foo/foo)
-// @exception An exception occurs if the file does not exist.
-const ls: any = (dirpath?: string) => {
-  const p = dirpath || '.';
+/**
+ * List the items of a given directory. Wrapper of fs.readdirSync.
+ * @param dirPath - path of the directory to be listed. List the current directory if dirPath is omitted.
+ * @return - a list of the paths relative to the current working directory.
+ * @exception - an exception occurs if a file is given as dirPath.
+ * @see cd
+ */
+const ls = (dirPath?: string): string[] => {
+  const p = dirPath || '.';
   const items = fs.readdirSync(p);
   return items.map((item) => path.join(p, item));
 };
-ls.help = 'List directory';
 
-ls.recursive = (dirpath?: string) => {
+/**
+ * List the items of a given directory and its subdirectories.
+ * @param dirPath - path of the root directory to be listed. List the current directory if dirPath is omitted.
+ * @return - a list of the paths relative to the current working directory.
+ * @exception - an exception occurs if a file is given as dirPath.
+ * @see ls
+ */
+ls.recursive = (dirPath?: string): string[] => {
   const walk = (dir) => {
     let results = [];
     const list = fs.readdirSync(dir);
@@ -28,8 +37,7 @@ ls.recursive = (dirpath?: string) => {
     });
     return results;
   };
-  return walk(dirpath || '.');
+  return walk(dirPath || '.');
 };
-ls.recursive.help = 'List directory recursively';
 
 export = ls;

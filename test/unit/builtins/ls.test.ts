@@ -1,8 +1,7 @@
 'use strict';
 
-import {after, before, beforeEach, describe, it} from "mocha";
-
-import * as assert from 'assert/strict'
+import { after, before, beforeEach, describe, it } from 'mocha';
+import { assert } from 'chai';
 import path = require('path');
 
 import ls = require('../../../src/builtins/ls');
