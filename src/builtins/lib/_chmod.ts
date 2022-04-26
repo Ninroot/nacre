@@ -1,9 +1,21 @@
 'use strict';
 
-import {chmodSync, statSync} from "fs";
-import {add, remove} from './mod';
+import { chmodSync, statSync } from 'fs';
+import { add, remove } from './mod';
 
-export function getPerm(octal) {
+type ItemPerm = {
+  read: boolean;
+  write: boolean;
+  execute: boolean;
+};
+
+export type Perm = {
+  user: ItemPerm;
+  group: ItemPerm;
+  others: ItemPerm;
+};
+
+export function getPerm(octal): Perm {
   const getPermByBit = (bit) => {
     switch (bit) {
       case '0': return { read: false, write: false, execute: false };
@@ -14,7 +26,7 @@ export function getPerm(octal) {
       case '5': return { read: true, write: false, execute: true };
       case '6': return { read: true, write: true, execute: false };
       case '7': return { read: true, write: true, execute: true };
-      default: return {};
+      default: return { read: false, write: false, execute: false };
     }
   };
   return {
@@ -77,7 +89,7 @@ export function removePerm(itemPath, mode) {
   return getPerm(newMode.toString(8));
 }
 
-export function getMode(itemPath) {
+export function getMode(itemPath): Perm {
   const octalPerm = statSync(itemPath).mode.toString(8);
   return getPerm(octalPerm);
 }

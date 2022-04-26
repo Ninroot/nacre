@@ -1,11 +1,10 @@
 'use strict';
 
-import {after, before, beforeEach, describe, it} from "mocha";
+import { after, before, beforeEach, describe, it } from 'mocha';
+import { assert } from 'chai';
+import { chmodSync } from 'fs';
 
-import {chmodSync} from "fs";
 
-
-import assert = require('assert/strict');
 import path = require('path');
 import chmod = require('../../../src/builtins/chmod');
 
@@ -30,7 +29,7 @@ describe('chmod unit test', () => {
   });
 
   it('chmod undefined', () => {
-    assert.throws(() => chmod());
+    assert.throws(() => chmod(undefined));
   });
 
   it('chmod', () => {
