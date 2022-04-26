@@ -1,9 +1,8 @@
 'use strict';
 
-import {describe, it} from "mocha";
-
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 import path = require('path');
-import * as assert from 'assert/strict'
 
 import stat = require('../../../src/builtins/stat');
 

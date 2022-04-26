@@ -1,12 +1,11 @@
 'use strict';
 
-import {lstatSync} from "fs";
+import { lstatSync, Stats } from 'fs';
+import * as nodePath from 'path';
 
-import * as nodePath from "path";
+import userid = require('./lib/userid');
 
-import userid = require("./lib/userid");
-
-function getType(fileStat) {
+function getType(fileStat: Stats) {
   if (fileStat.isFile()) {
     return 'file';
   }
@@ -31,10 +30,25 @@ function getType(fileStat) {
   return 'unknown';
 }
 
-const stat = (path) => {
-  const ns = lstatSync(path);
+type Stat = {
+  name: string,
+  type: string,
+  size: number,
+  createdAt: Date,
+  modifiedAt: Date,
+  owner?: string,
+  group?: string
+};
+
+/**
+ * Get item status. The returned fields `owner` and `group` are undefined on Windows systems.
+ * @param itemPath - the path of the item.
+ * @return - status of the item.
+ */
+const stat = (itemPath: string): Stat => {
+  const ns = lstatSync(itemPath);
   return {
-    name: nodePath.basename(path),
+    name: nodePath.basename(itemPath),
     type: getType(ns),
     size: ns.size,
     createdAt: ns.birthtime,
