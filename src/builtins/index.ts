@@ -11,7 +11,7 @@ import mv = require('./mv');
 import pwd = require('./pwd');
 import stat = require('./stat');
 import touch = require('./touch');
-import sh = require('./sh');
+import $ = require('./exec');
 
 // using `export default function` make the builtins unavailable to use in scripting
 export {
@@ -26,5 +26,5 @@ export {
   pwd,
   stat,
   touch,
-  sh,
+  $,
 };

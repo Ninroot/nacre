@@ -2,9 +2,13 @@
 
 import { execSync } from 'child_process';
 import CommandFailedError from './lib/errors';
-import {platform} from "process";
 
-const sh = (command?: string) => {
+/**
+ * Execute a given command.
+ * @param command - command to be executed.
+ * @return - The stdout from the execution.
+ */
+const $ = (command: string): string => {
   if (!command) {
     return undefined;
   }
@@ -18,4 +22,4 @@ const sh = (command?: string) => {
   }
 };
 
-export = (platform === 'win32') ? undefined : sh;
+export = $;
