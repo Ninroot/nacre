@@ -7,11 +7,12 @@ import path = require('path');
 
 describe('scripting unit test', () => {
   before('move to fixtures directory', () => {
-    process.chdir(path.join(__dirname));
+    process.chdir(__dirname);
   });
 
   it('should import pwd builtin', () => {
     const appDir = path.join(process.cwd(), '../../..');
+    console.log({appDir});
     const actual = execSync(
       'node ./built/src/index.js ./built/test/unit/lib/fixtures/scripting/pwd.js',
       { cwd: appDir },
