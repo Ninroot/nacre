@@ -13,7 +13,7 @@ describe('scripting unit test', () => {
     const rec = ls.recursive(appDir);
     console.log({rec})
     const actual = execSync(
-      'node ./built/src/index.js ./built/test/unit/lib/fixtures/scripting/pwd.js',
+      'node ./bin/index.js ./test/unit/lib/fixtures/scripting/pwd.js',
       { cwd: appDir },
     );
     assert.include(actual.toString(), appDir);
