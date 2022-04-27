@@ -1,57 +1,64 @@
-import path = require('path');
+import path = require('./path');
 import * as fs from 'fs';
 
 export type Completion = [string[], string];
 
-function completer(line: string, type?: 'file' | 'directory'): Completion {
+function completer2(line: string, dirOnly?: boolean): Completion {
   if (line === undefined || line === null) {
     return undefined;
   }
 
-  const isDir = line.slice(-1) === '/';
-  const dirname = isDir ? line : path.dirname(line);
+  // 1. get the path of the targeted directory
+  const targetDir = path.dirPath(line);
 
-  let items: string[];
+  // 2. fetch items of target directory
+  let targetItems: string[];
   try {
-    items = fs.readdirSync(dirname);
-    if (type === 'file') {
-      items = items.filter((item) => fs.lstatSync(item).isFile());
-    } else if (type === 'directory') {
-      items = items.filter((item) => fs.lstatSync(item).isDirectory());
+    // Get items of the target directory
+    targetItems = fs.readdirSync(targetDir);
+    if (dirOnly) {
+      targetItems = targetItems.filter((item) => {
+        const itemPath = path.join(targetDir, item);
+        return fs.lstatSync(itemPath).isDirectory();
+      });
     }
   } catch {
-    items = [];
+    targetItems = [];
   }
 
-  const hits = items.filter((item) => {
-    const baseItem = path.basename(item);
-    const baseLine = path.basename(line);
-    return baseItem.startsWith(baseLine);
-  });
+  // 3. set item to match
+  // '' => ''
+  // 'foo' => 'foo'
+  // 'foo/bar' => 'bar'
+  // 'foo/' => ''
+  // 'foo/.' => '.'
+  // 'foo/..' => '..'
+  // '.' => '.'
+  // '..' => '..'
+  // './' => ''
+  // '/' => ''
+  const itemToMatch = path.isDir(line) ? '' : path.basename(line);
 
-  if (line.length > 1 && !isDir) {
-    items = [];
-  }
+  // 4. filter target items
+  const hits = targetItems.filter((item) => item.startsWith(itemToMatch));
 
+  // 5. Add extra '/' when the only matching item is a directory
   if (hits.length === 1) {
-    const hit = path.join(dirname, hits[0]);
+    const hit = path.join(targetDir, hits[0]);
     if (fs.statSync(hit).isDirectory()) {
       hits[0] = path.join(hits[0], '/');
     }
   }
 
-  const completions = hits.length ? hits : items;
-  return [completions, path.basename(line)];
+  // 6. hits and the substring that was used for the matching
+  return [hits, itemToMatch];
 }
 
 export function itemPathCompleter(line: string): Completion {
-  return completer(line);
+  return completer2(line);
 }
 
-export function filePathCompleter(line: string): Completion {
-  return completer(line, 'file');
-}
 
 export function dirPathCompleter(line: string): Completion {
-  return completer(line, 'directory');
+  return completer2(line, true);
 }

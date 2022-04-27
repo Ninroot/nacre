@@ -1,40 +1,32 @@
 'use strict';
 
-import { after, afterEach, before, beforeEach, describe, it } from 'mocha';
+import { afterEach, before, beforeEach, describe, it } from 'mocha';
 import { assert } from 'chai';
 import path = require('path');
 
 import Completer from '../../../src/lib/completer';
 import Inspector from '../../../src/lib/inspector';
-import { cd } from '../../../src/builtins';
 
 const windows = process.platform === 'win32';
 
-let runner: Inspector;
-let completer: Completer;
-
-let cwd;
-
-before('save current working directory', () => {
-  cwd = process.cwd();
-});
-
-after('restore current working directory', () => {
-  process.chdir(cwd);
-});
-
-beforeEach(async () => {
-  cd(path.join(__dirname, 'fixtures', 'completer'));
-  runner = new Inspector();
-  await runner.start();
-  completer = new Completer(runner);
-});
-
-afterEach(async () => {
-  runner.stop();
-});
-
 describe('completer unit test', () => {
+  let runner: Inspector;
+  let completer: Completer;
+
+  before('move to fixtures directory', () => {
+    process.chdir(path.join(__dirname, 'fixtures', 'completer'));
+  });
+
+  beforeEach(async () => {
+    runner = new Inspector();
+    await runner.start();
+    completer = new Completer(runner);
+  });
+
+  afterEach(async () => {
+    runner.stop();
+  });
+
   it('Remove prefix', () => {
     const actual = completer.removePrefix(['abc', 'abcdeabc', ''], 'abc');
     assert.deepStrictEqual(actual, ['deabc']);

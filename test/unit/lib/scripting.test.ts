@@ -1,26 +1,21 @@
 'use strict';
 
-import { describe, after, before, it } from 'mocha';
+import { describe, before, it } from 'mocha';
 import { execSync } from 'child_process';
 import { assert } from 'chai';
-
-let cwd;
-
-before('save current working directory', () => {
-  cwd = process.cwd();
-});
-
-after('restore current working directory', () => {
-  process.chdir(cwd);
-});
+import path = require('path');
 
 describe('scripting unit test', () => {
+  before('move to fixtures directory', () => {
+    process.chdir(path.join(__dirname));
+  });
+
   it('should import pwd builtin', () => {
-    console.log('CWD:', cwd);
+    const appDir = path.join(process.cwd(), '../../..');
     const actual = execSync(
       'node ./built/src/index.js ./built/test/unit/lib/fixtures/scripting/pwd.js',
-      { cwd },
+      { cwd: appDir },
     );
-    assert.include(actual.toString(), cwd);
+    assert.include(actual.toString(), appDir);
   });
 });

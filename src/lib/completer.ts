@@ -42,6 +42,8 @@ export default class Completer {
         return undefined;
       }
 
+      const pathToComplete = node.value.slice(0, cursor - 1);
+
       const callExpression = this.findParent(root, this.findParent(root, node));
       if (callExpression && callExpression.type === 'CallExpression') {
         const callArguments = callExpression.arguments;
@@ -50,16 +52,14 @@ export default class Completer {
         if (argAtCursor && argAtCursor.type === 'Literal') {
           const callee = source.slice(callExpression.callee.start, callExpression.callee.end);
           const completeFunction = `function f(str, argNumber) { return JSON.stringify(${callee}.complete[argNumber](str)) }`;
-          const funRes = await this.runner.callFunctionOn(completeFunction, [{ value: node.value }, { value: argNumber }]);
+          const funRes = await this.runner.callFunctionOn(completeFunction, [{ value: pathToComplete }, { value: argNumber }]);
           if (funRes.result && funRes.result.subtype !== 'error') {
             const jsonRes = JSON.parse(funRes.result.value);
             return { completion: jsonRes };
           }
         }
       }
-
-      const itemPath = path.normalizeCurrent(cursor === node.start + 1 ? '' : node.value);
-      return { completion: itemPathCompleter(itemPath) };
+      return { completion: itemPathCompleter(pathToComplete) };
     }
     if (node.type === 'Identifier') {
       const identifierName = node.name.slice(0, cursor);

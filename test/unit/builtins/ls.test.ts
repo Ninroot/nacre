@@ -1,32 +1,23 @@
 'use strict';
 
-import { after, before, beforeEach, describe, it } from 'mocha';
+import { beforeEach, describe, it } from 'mocha';
 import { assert } from 'chai';
 import path = require('path');
 
 import ls = require('../../../src/builtins/ls');
-import cd = require('../../../src/builtins/cd');
 
 describe('ls unit test', () => {
-  let cwd;
-
-  before('save current working directory', () => {
-    cwd = process.cwd();
+  beforeEach('move to fixtures directory', () => {
+    process.chdir(path.join(__dirname, 'fixtures', 'ls'));
   });
 
-  after('restore current working directory', () => {
-    process.chdir(cwd);
-  });
-
-  beforeEach('move to current dir', () => {
-    cd(__dirname);
-  });
   it('should return a non empty array when no args', () => {
-    cd(path.join(__dirname, 'fixtures', 'ls', 'basic'));
+    process.chdir(path.join('basic'));
     assert.deepStrictEqual(ls(), ['a', 'b']);
   });
+
   it('should return a non empty array when recursive', () => {
-    cd(path.join(__dirname, 'fixtures', 'ls', 'recursive'));
+    process.chdir(path.join('recursive'));
     const actual = ls.recursive();
     const expected = [
       'd1',
@@ -40,6 +31,7 @@ describe('ls unit test', () => {
     ].map((p) => path.join(p));
     assert.deepStrictEqual(actual, expected);
   });
+
   it('should fail when ls a file which does not exist', () => {
     assert.throws(() => ls('fileThatDoesNot.Exist'));
   });
