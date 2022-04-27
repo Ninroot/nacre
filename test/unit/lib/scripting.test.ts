@@ -6,13 +6,8 @@ import { assert } from 'chai';
 import path = require('path');
 
 describe('scripting unit test', () => {
-  before('move to fixtures directory', () => {
-    console.log({__dirname});
-    process.chdir(__dirname);
-  });
-
   it('should import pwd builtin', () => {
-    const appDir = path.join(process.cwd(), '../../..');
+    const appDir = path.join(__dirname, '../../..');
     console.log({appDir});
     const actual = execSync(
       'node ./built/src/index.js ./built/test/unit/lib/fixtures/scripting/pwd.js',
