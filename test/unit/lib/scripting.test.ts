@@ -8,7 +8,7 @@ import {ls} from "../../../src/builtins";
 
 describe('scripting unit test', () => {
   it('should import pwd builtin', () => {
-    const appDir = path.join(__dirname, '../../../..');
+    const appDir = path.join(__dirname, '../../..');
     console.log({appDir});
     const rec = ls.recursive(appDir);
     console.log({rec})
