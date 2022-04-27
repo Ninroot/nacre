@@ -1,9 +1,9 @@
 'use strict';
 
-import {after, before, describe, it} from "mocha";
+import { after, before, describe, it } from 'mocha';
 import { spawn } from 'child_process';
+import { assert } from 'chai';
 
-import assert = require('assert/strict');
 import path = require('path');
 
 let cwd;
@@ -18,7 +18,7 @@ after('restore current working directory', () => {
 
 function run(...args): any {
   return new Promise((res) => {
-    const proc = spawn(process.execPath, [path.join(cwd, 'built', 'src', 'index.js'), ...args]);
+    const proc = spawn(process.execPath, [path.join(cwd, 'built', 'index.js'), ...args]);
     const out = [];
     const err = [];
     proc.stdout.on('data', (data) => out.push(data));
@@ -37,6 +37,11 @@ function run(...args): any {
 }
 
 describe('index unit test', () => {
+  it('--version', async () => {
+    const actual = await run('--version');
+    assert.match(actual.stdout, /[0-9]+\.[0-9]+\.[0-9]+/);
+  });
+
   it('--help', async () => {
     const actual = await run('--help');
     assert.ok(actual.stdout.includes('Usage'), `Should be ${actual.stdout}`);

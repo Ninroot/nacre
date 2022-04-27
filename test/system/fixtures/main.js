@@ -4,8 +4,13 @@ const path = require('path');
 const testFolder = path.resolve('./tmp/tmpNacreTest');
 let exitCode = 0;
 
+/**
+ * The test uses the Nacre version installed on your system.
+ * Make sure you have installed the version you work on.
+ */
+
 try {
-  mkdir.recursive(testFolder);
+  mkdir.intermediate(testFolder);
   const location = cd(testFolder);
   console.log({ location });
 
