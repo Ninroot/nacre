@@ -7,6 +7,7 @@ import path = require('path');
 
 describe('scripting unit test', () => {
   before('move to fixtures directory', () => {
+    console.log({__dirname});
     process.chdir(__dirname);
   });
 
