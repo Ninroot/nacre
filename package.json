@@ -2,7 +2,7 @@
   "name": "nacre",
   "version": "0.1.1",
   "description": "Intuitive Shell",
-  "main": "built/src/index.js",
+  "main": "built/index.js",
   "license": "MIT",
   "author": {
     "name": "Arnaud Debec",
@@ -18,7 +18,7 @@
     "nacre": "./bin/index.js"
   },
   "files": [
-    "built/src",
+    "built",
     "README.md",
     "LICENSE"
   ],
