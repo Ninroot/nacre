@@ -9,7 +9,7 @@ module.exports = {
     'airbnb-typescript/base',
   ],
   parserOptions: {
-    project: './tsconfig.json'
+    project: 'tsconfig.eslint.json',
   },
   ignorePatterns: ['*.js']
 };
