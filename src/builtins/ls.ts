@@ -1,7 +1,7 @@
 'use strict';
 
 import fs = require('fs');
-import path = require('path');
+import path = require('../lib/path');
 
 /**
  * List the items of a given directory. Wrapper of fs.readdirSync.
@@ -12,8 +12,9 @@ import path = require('path');
  */
 const ls = (dirPath?: string): string[] => {
   const p = dirPath || '.';
-  const items = fs.readdirSync(p);
-  return items.map((item) => path.join(p, item));
+  return fs.readdirSync(p)
+    .map((item) => path.join(p, item))
+    .map((itemPath) => path.toPosix(itemPath));
 };
 
 /**
@@ -37,7 +38,7 @@ ls.recursive = (dirPath?: string): string[] => {
     });
     return results;
   };
-  return walk(dirPath || '.');
+  return walk(dirPath || '.').map((itemPath) => path.toPosix(itemPath));
 };
 
 export = ls;

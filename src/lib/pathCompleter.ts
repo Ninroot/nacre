@@ -9,7 +9,7 @@ function completer2(line: string, dirOnly?: boolean): Completion {
   }
 
   // 0. make sure line is posix
-  const posixLine = line.split(path.sep).join(path.posix.sep);
+  const posixLine = path.toPosix(line);
 
   // 1. get the path of the targeted directory
   const targetDir = path.dirPath(posixLine);

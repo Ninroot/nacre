@@ -28,7 +28,7 @@ describe('ls unit test', () => {
       'd2',
       'd2/f21',
       'f1',
-    ].map((p) => path.join(p));
+    ];
     assert.deepStrictEqual(actual, expected);
   });
 

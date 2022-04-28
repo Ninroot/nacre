@@ -2,13 +2,14 @@
 
 import os = require('os');
 import { dirPathCompleter } from '../lib/pathCompleter';
+import path = require('../lib/path');
 
 let flip = os.homedir();
 
 /**
  * Change the working directory of the Node.js process for the new directory location.
  * @param dirPath - path of the new directory location. If not provided, equivalent to `cd.home()`.
- * @return path of the new directory location.
+ * @return posix path of the new directory location.
  * @see cd.home
  */
 const cd = (dirPath?: string): string => {
@@ -20,7 +21,7 @@ const cd = (dirPath?: string): string => {
 
   try {
     process.chdir(dirPath || '.');
-    return process.cwd();
+    return path.toPosix(process.cwd());
   } catch (err) {
     return err;
   }

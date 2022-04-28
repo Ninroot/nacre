@@ -26,4 +26,6 @@ path.dirPath = (posixPath: string): string => {
   return isDir ? posixPath.slice(0, -1) : path.posix.dirname(posixPath);
 };
 
+path.toPosix = (itemPath: string): string => itemPath.split(path.sep).join(path.posix.sep);
+
 export = path;

@@ -2,7 +2,6 @@
 
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import { platform } from 'process';
 import path = require('../../../src/lib/path');
 
 describe('path unit test', () => {
