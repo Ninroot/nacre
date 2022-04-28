@@ -10,11 +10,7 @@ describe('path unit test', () => {
     assert.isFalse(path.isDir(''));
     assert.isFalse(path.isDir('foo'));
     assert.isFalse(path.isDir('.'));
-    if (platform === 'win32') {
-      assert.isTrue(path.isDir('C:\\\\'));
-    } else {
-      assert.isTrue(path.isDir('/'));
-    }
+    assert.isTrue(path.isDir('/'));
   });
 
   it('dirPath', () => {

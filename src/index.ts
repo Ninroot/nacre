@@ -2,11 +2,12 @@
 
 'use strict';
 
-import process = require("node:process");
-import minimist = require("minimist");
-import Inspector from './lib/inspector';
-import Repl from "./lib/repl";
+import process = require('node:process');
+import minimist = require('minimist');
 import path = require('path');
+
+import Inspector from './lib/inspector';
+import Repl from './lib/repl';
 
 const args = minimist(process.argv.slice(2));
 

@@ -30,7 +30,10 @@ describe('stat unit test', () => {
     testOwnership(s);
   });
 
-  it('should recognize a symbolic link file', () => {
+  it('should recognize a symbolic link file', function () {
+    if (windows) {
+      this.skip();
+    }
     const s = stat(path.join(__dirname, 'fixtures', 'stat', 'symbolicLink.file'));
     assert.equal(s.type, 'symbolicLink');
   });

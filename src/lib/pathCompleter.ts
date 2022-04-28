@@ -8,8 +8,11 @@ function completer2(line: string, dirOnly?: boolean): Completion {
     return undefined;
   }
 
+  // 0. make sure line is posix
+  const posixLine = line.split(path.sep).join(path.posix.sep);
+
   // 1. get the path of the targeted directory
-  const targetDir = path.dirPath(line);
+  const targetDir = path.dirPath(posixLine);
 
   // 2. fetch items of target directory
   let targetItems: string[];
@@ -18,7 +21,7 @@ function completer2(line: string, dirOnly?: boolean): Completion {
     targetItems = fs.readdirSync(targetDir);
     if (dirOnly) {
       targetItems = targetItems.filter((item) => {
-        const itemPath = path.join(targetDir, item);
+        const itemPath = path.posix.join(targetDir, item);
         return fs.lstatSync(itemPath).isDirectory();
       });
     }
@@ -37,16 +40,16 @@ function completer2(line: string, dirOnly?: boolean): Completion {
   // '..' => '..'
   // './' => ''
   // '/' => ''
-  const itemToMatch = path.isDir(line) ? '' : path.basename(line);
+  const itemToMatch = path.isDir(posixLine) ? '' : path.posix.basename(posixLine);
 
   // 4. filter target items
   const hits = targetItems.filter((item) => item.startsWith(itemToMatch));
 
   // 5. Add extra '/' when the only matching item is a directory
   if (hits.length === 1) {
-    const hit = path.join(targetDir, hits[0]);
+    const hit = path.posix.join(targetDir, hits[0]);
     if (fs.statSync(hit).isDirectory()) {
-      hits[0] = path.join(hits[0], '/');
+      hits[0] = path.posix.join(hits[0], '/');
     }
   }
 
