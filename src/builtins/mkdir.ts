@@ -1,8 +1,14 @@
 'use strict';
 
-import path = require('path');
+import path = require('../lib/path');
 import { mkdirSync } from 'fs';
 import { dirPathCompleter } from '../lib/pathCompleter';
+
+function mkdirRec(dirPath: string, recursive: boolean) {
+  const normalizedDirPath = path.normalize(dirPath);
+  mkdirSync(normalizedDirPath, { recursive });
+  return path.toPosix(normalizedDirPath);
+}
 
 /**
  * Create a directory. Wrapper of fs.mkdirSync.
@@ -10,9 +16,7 @@ import { dirPathCompleter } from '../lib/pathCompleter';
  * @return - the path of the newly created directory.
  */
 const mkdir = (dirPath: string): string => {
-  path.normalize(dirPath);
-  mkdirSync(dirPath, { recursive: false });
-  return path.normalize(dirPath);
+  return mkdirRec(dirPath, false);
 };
 
 mkdir.complete = [dirPathCompleter];
@@ -23,9 +27,7 @@ mkdir.complete = [dirPathCompleter];
  * @return - the path of the newly created directory.
  */
 mkdir.intermediate = (dirPath: string): string => {
-  path.normalize(dirPath);
-  mkdirSync(dirPath, { recursive: true });
-  return path.normalize(dirPath);
+  return mkdirRec(dirPath, true);
 };
 
 // @ts-ignore
