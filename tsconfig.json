@@ -7,7 +7,8 @@
     "moduleResolution": "Node",
     "declaration": true,
     // to ignore node_modules
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "sourceMap": true
   },
   "include": [
     "./src/**/*.ts",
