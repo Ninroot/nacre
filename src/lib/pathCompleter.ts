@@ -3,16 +3,16 @@ import * as fs from 'fs';
 
 export type Completion = [string[], string];
 
-function completer2(line: string, dirOnly?: boolean): Completion {
+function pathCompleter(line: string, dirOnly?: boolean): Completion {
   if (line === undefined || line === null) {
     return undefined;
   }
 
-  // 0. make sure line is posix
-  const posixLine = line.split(path.sep).join(path.posix.sep);
+  // 0. make sure line is sanitized from windows escapes
+  line = process.platform === 'win32' ? line.split('\\\\').join('\\') : line;
 
   // 1. get the path of the targeted directory
-  const targetDir = path.dirPath(posixLine);
+  const targetDir = path.dirPath(line);
 
   // 2. fetch items of target directory
   let targetItems: string[];
@@ -21,7 +21,7 @@ function completer2(line: string, dirOnly?: boolean): Completion {
     targetItems = fs.readdirSync(targetDir);
     if (dirOnly) {
       targetItems = targetItems.filter((item) => {
-        const itemPath = path.posix.join(targetDir, item);
+        const itemPath = path.join(targetDir, item);
         return fs.lstatSync(itemPath).isDirectory();
       });
     }
@@ -40,16 +40,21 @@ function completer2(line: string, dirOnly?: boolean): Completion {
   // '..' => '..'
   // './' => ''
   // '/' => ''
-  const itemToMatch = path.isDir(posixLine) ? '' : path.posix.basename(posixLine);
+  const itemToMatch = path.isDir(line) ? '' : path.basename(line);
 
   // 4. filter target items
   const hits = targetItems.filter((item) => item.startsWith(itemToMatch));
 
-  // 5. Add extra '/' when the only matching item is a directory
+  // 5. Add extra separator when the only matching item is a directory
   if (hits.length === 1) {
-    const hit = path.posix.join(targetDir, hits[0]);
+    const hit = path.join(targetDir, hits[0]);
     if (fs.statSync(hit).isDirectory()) {
-      hits[0] = path.posix.join(hits[0], '/');
+      if (process.platform === 'win32') {
+        // Windows backslash need to be escaped in JS string. Eg: 'foo\\bar'
+        hits[0] += '\\\\';
+      } else {
+        hits[0] += '/';
+      }
     }
   }
 
@@ -58,10 +63,10 @@ function completer2(line: string, dirOnly?: boolean): Completion {
 }
 
 export function itemPathCompleter(line: string): Completion {
-  return completer2(line);
+  return pathCompleter(line);
 }
 
 
 export function dirPathCompleter(line: string): Completion {
-  return completer2(line, true);
+  return pathCompleter(line, true);
 }

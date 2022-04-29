@@ -7,7 +7,7 @@ path.isDir = (itemPath: string): boolean => {
   if (!itemPath) {
     return false;
   }
-  return itemPath.slice(-1) === path.posix.sep;
+  return itemPath.slice(-1) === path.sep;
 };
 
 // Get the path of the directory. Similar to dirname but treats when the path ends with a directory.
@@ -17,13 +17,13 @@ path.isDir = (itemPath: string): boolean => {
 // 'dir/bar/' => 'dir/bar'
 // '/dir' => '/'
 // '/' => '/'
-path.dirPath = (posixPath: string): string => {
-  const isDir = path.isDir(posixPath);
-  const parsed = path.posix.parse(posixPath);
-  if (parsed.root) {
+path.dirPath = (itemPath: string): string => {
+  const isDir = path.isDir(itemPath);
+  const parsed = path.parse(itemPath);
+  if (parsed.root && parsed.base === '') {
     return parsed.root;
   }
-  return isDir ? posixPath.slice(0, -1) : path.posix.dirname(posixPath);
+  return isDir ? itemPath.slice(0, -1) : path.dirname(itemPath);
 };
 
 export = path;

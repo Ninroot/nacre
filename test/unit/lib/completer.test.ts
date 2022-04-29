@@ -97,12 +97,14 @@ describe('completer unit test', () => {
   });
 
   it('"./|"', async () => {
-    const { completion } = await completer.complete('"./"', 3);
+    const source = process.platform === 'win32' ? '".\\\\"' : '"./"';
+    const { completion } = await completer.complete(source, source.length - 1);
     ['dire1', 'dire2', 'file1.md', 'file2.md'].forEach((file) => assert.include(completion[0], file));
   });
 
   it('"./dir|"', async () => {
-    const { completion } = await completer.complete('"./dir"', 6);
+    const source = process.platform === 'win32' ? '".\\\\dir"' : '"./dir"';
+    const { completion } = await completer.complete(source, source.length - 1);
     assert.deepStrictEqual(completion, [['dire1', 'dire2'], 'dir']);
   });
 

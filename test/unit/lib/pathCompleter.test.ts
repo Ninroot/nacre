@@ -12,34 +12,49 @@ describe('pathCompleter unit test', () => {
   });
 
   it('itemPathCompleter unit test', function () {
-    // assert.equal(itemPathCompleter(undefined), undefined);
-    // assert.deepEqual(itemPathCompleter(''), [['.dire1', 'dire1', 'dire2', 'file1.md', 'file2.md'], '']);
-    // assert.deepEqual(itemPathCompleter('./'), [['.dire1', 'dire1', 'dire2', 'file1.md', 'file2.md'], '']);
-    // assert.deepEqual(itemPathCompleter('./fil'), [['file1.md', 'file2.md'], 'fil']);
-    // assert.deepEqual(itemPathCompleter('.'), [['.dire1/'], '.']);
-    // assert.deepEqual(itemPathCompleter('dire'), [['dire1', 'dire2'], 'dire']);
-    // assert.deepEqual(itemPathCompleter('file2.md'), [['file2.md'], 'file2.md']);
-    // assert.deepEqual(itemPathCompleter('file2.md/.'), [[], '.']);
-    if (process.platform === 'win32') {
-      this.skip();
-      // https://github.com/nodejs/node/issues/42895
-      assert.deepEqual(itemPathCompleter('file2.md/../'), [[], '']);
-    }
-    assert.deepEqual(itemPathCompleter('dire1'), [['dire1/'], 'dire1']);
+    assert.equal(itemPathCompleter(undefined), undefined);
+    assert.deepEqual(itemPathCompleter(''), [['.dire1', 'dire1', 'dire2', 'file1.md', 'file2.md'], '']);
+    assert.deepEqual(itemPathCompleter('dire'), [['dire1', 'dire2'], 'dire']);
+    assert.deepEqual(itemPathCompleter('file2.md'), [['file2.md'], 'file2.md']);
     assert.deepEqual(itemPathCompleter('doesNotExist'), [[], 'doesNotExist']);
-    assert.deepEqual(itemPathCompleter('dire1/fi'), [['file11.md', 'file12.md'], 'fi']);
+    if (process.platform === 'win32') {
+      assert.deepEqual(itemPathCompleter('.'), [['.dire1\\\\'], '.']);
+      assert.deepEqual(itemPathCompleter('file2.md\\\\.'), [[], '.']);
+      assert.deepEqual(itemPathCompleter('dire1'), [['dire1\\\\'], 'dire1']);
+      assert.deepEqual(itemPathCompleter('.\\\\'), [['.dire1', 'dire1', 'dire2', 'file1.md', 'file2.md'], '']);
+      assert.deepEqual(itemPathCompleter('.\\\\fil'), [['file1.md', 'file2.md'], 'fil']);
+      assert.deepEqual(itemPathCompleter('dire1\\\\fi'), [['file11.md', 'file12.md'], 'fi']);
 
-    const [rootCompletion, rootTrailing] = itemPathCompleter('/');
-    assert.isAbove(rootCompletion.length, 1);
-    assert.equal(rootTrailing, '');
+      // FIXME https://github.com/nodejs/node/issues/42895
+      // assert.deepEqual(itemPathCompleter('file2.md/../'), [[], '']);
+
+      const [rootCompletion, rootTrailing] = itemPathCompleter('\\');
+      assert.isAbove(rootCompletion.length, 1);
+      assert.equal(rootTrailing, '');
+    } else {
+      assert.deepEqual(itemPathCompleter('.'), [['.dire1/'], '.']);
+      assert.deepEqual(itemPathCompleter('file2.md/.'), [[], '.']);
+      assert.deepEqual(itemPathCompleter('dire1'), [['dire1/'], 'dire1']);
+      assert.deepEqual(itemPathCompleter('./'), [['.dire1', 'dire1', 'dire2', 'file1.md', 'file2.md'], '']);
+      assert.deepEqual(itemPathCompleter('./fil'), [['file1.md', 'file2.md'], 'fil']);
+      assert.deepEqual(itemPathCompleter('dire1/fi'), [['file11.md', 'file12.md'], 'fi']);
+
+      const [rootCompletion, rootTrailing] = itemPathCompleter('/');
+      assert.isAbove(rootCompletion.length, 1);
+      assert.equal(rootTrailing, '');
+    }
   });
 
   it('dirPathCompleter unit test', () => {
     assert.deepEqual(dirPathCompleter(''), [['.dire1', 'dire1', 'dire2'], '']);
     assert.deepEqual(dirPathCompleter('dire'), [['dire1', 'dire2'], 'dire']);
     assert.deepEqual(dirPathCompleter('file2.md'), [[], 'file2.md']);
-    assert.deepEqual(dirPathCompleter('dire1'), [['dire1/'], 'dire1']);
-    assert.deepEqual(dirPathCompleter('dire1/'), [['dire11', 'dire12'], '']);
+    if (process.platform === 'win32') {
+      assert.deepEqual(dirPathCompleter('dire1'), [['dire1\\\\'], 'dire1']);
+    } else {
+      assert.deepEqual(dirPathCompleter('dire1'), [['dire1/'], 'dire1']);
+      assert.deepEqual(dirPathCompleter('dire1/'), [['dire11', 'dire12'], '']);
+    }
   });
 });
 

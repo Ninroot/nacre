@@ -1,6 +1,6 @@
 'use strict';
 
-import {afterEach, beforeEach, describe, it} from "mocha";
+import { afterEach, beforeEach, describe, it } from 'mocha';
 
 import assert = require('assert/strict');
 import path = require('path');
@@ -68,6 +68,7 @@ describe('inspector unit test', () => {
   it('evaluate somethingThatDoesNotExist', async () => {
     const { result: actual } = await inspector.evaluate('somethingThatDoesNotExist', true);
     // ReferenceError only when throwOnSideEffect is true
+    // FIXME Fails on local windows machine
     assert.ok(actual.description.includes('EvalError: Possible side-effect in debug-evaluate'));
   });
 
