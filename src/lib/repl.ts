@@ -21,7 +21,8 @@ const pairs = {
   '`': '`',
 };
 
-const backspace = '\x7F';
+// Note: clearLine and cursorTo are undefined when process.stdout is not a tty.
+// Node/NPM console in WebStorm is non-Tty, as node process is started with input/output streams redirection.
 
 export default class Repl {
   private readonly input: any;
@@ -30,7 +31,7 @@ export default class Repl {
 
   private readonly prompt: any;
 
-  private readonly rl;
+  readonly rl;
 
   private readonly inspector: Inspector;
 
@@ -48,7 +49,7 @@ export default class Repl {
 
   private ttyWriteParent: any;
 
-  constructor(input, output, prompt) {
+  constructor(input, output, prompt, terminal = true) {
     this.input = input;
     this.output = output;
     this.prompt = prompt;
@@ -57,6 +58,7 @@ export default class Repl {
       output: this.output,
       prompt: this.prompt,
       completer: (line, cb) => this.completeCallback(line, cb),
+      terminal,
     });
     this.inspector = new Inspector();
     this.nextCtrlCKills = false;
@@ -87,7 +89,7 @@ export default class Repl {
     this.refreshLineParent();
     // reset internal line without highlight
     this.rl.line = line;
-    this.output.cursorTo(prevCursorPos.cols);
+    readline.cursorTo(this.output, prevCursorPos.cols);
   }
 
   refreshLine() {
@@ -95,9 +97,9 @@ export default class Repl {
     const inspectedLine = this.rl.line;
 
     if (this.mode === 'REVERSE') {
-      this.output.moveCursor(0, -1);
-      this.output.cursorTo(this.prompt.length);
-      this.output.clearScreenDown();
+      readline.moveCursor(this.output, 0, -1);
+      readline.cursorTo(this.output, this.prompt.length);
+      readline.clearScreenDown(this.output);
       let match;
       if (inspectedLine) {
         match = this.rl.history.find((h) => h.includes(inspectedLine));
@@ -107,16 +109,16 @@ export default class Repl {
         match = underlineIgnoreANSI(match, inspectedLine);
       }
       this.output.write(`${match || ''}\n(reverse-i-search): ${inspectedLine}`);
-      this.output.cursorTo('(reverse-i-search): '.length + this.rl.cursor);
+      readline.cursorTo(this.output, '(reverse-i-search): '.length + this.rl.cursor);
       return;
     }
 
     this.highlight(inspectedLine);
 
     if (inspectedLine !== '') {
-      this.output.cursorTo(this.prompt.length + this.rl.line.length);
-      this.output.clearScreenDown();
-      this.output.cursorTo(this.prompt.length + this.rl.cursor);
+      readline.cursorTo(this.output, this.prompt.length + this.rl.line.length);
+      readline.clearScreenDown(this.output);
+      readline.cursorTo(this.output, this.prompt.length + this.rl.cursor);
 
       Promise.all([
         this.completer.complete(inspectedLine),
@@ -127,15 +129,15 @@ export default class Repl {
             return;
           }
           if (context && context.signature) {
-            this.output.cursorTo(this.prompt.length + this.rl.line.length);
+            readline.cursorTo(this.output, this.prompt.length + this.rl.line.length);
             this.output.write(chalk.grey(context.signature));
           }
           if (preview) {
             this.output.write(`\n${chalk.grey(preview.slice(0, this.output.columns - 1))}`);
-            this.output.moveCursor(0, -1);
+            readline.moveCursor(this.output, 0, -1);
           }
           if (context || preview) {
-            this.output.cursorTo(this.prompt.length + this.rl.cursor);
+            readline.cursorTo(this.output, this.prompt.length + this.rl.cursor);
           }
         })
         .catch(() => {});
@@ -168,19 +170,30 @@ export default class Repl {
       this.nextCtrlCKills = false;
     }
 
-    if (Object.keys(pairs).includes(key.sequence)) {
+    // typing `(` when `(|)` => `((|))`
+    if (Object.keys(pairs).includes(key.sequence) || Object.values(pairs).includes(key.sequence)) {
       const prev = this.previousChar();
       const next = this.nextChar();
-      const opening = key.sequence;
-      const according = pairs[key.sequence];
-      if ((prev === opening && next === according) || next !== according) {
-        this.insertString(opening + according);
-        this.rl.cursor--;
+      const curr = key.sequence;
+      const according = pairs[curr];
+      // typing `(` when `abc|)` => `abc(|)`
+      if (prev !== curr && next === according && curr !== pairs[curr]) {
+        return true;
       }
-      return false;
+      // typing `)` when `abc|)` => `abc)|`
+      if (Object.values(pairs).includes(key.sequence) && curr === next) {
+        this.rl.cursor++;
+        return false;
+      }
+      if (according) {
+        this.insertString(key.sequence + according);
+        this.rl.cursor--;
+        return false;
+      }
+      return true;
     }
 
-    if (char === backspace) {
+    if (key.name === 'backspace') {
       const prev = this.previousChar();
       const next = this.nextChar();
       if (Object.keys(pairs).includes(prev) && pairs[prev] === next) {
@@ -198,9 +211,9 @@ export default class Repl {
     if (key.name === 'return' && this.mode === 'REVERSE') {
       this.mode = 'NORMAL';
       const match = this.rl.history.find((h) => h.includes(this.rl.line));
-      this.output.moveCursor(0, -1);
-      this.output.cursorTo(0);
-      this.output.clearScreenDown();
+      readline.moveCursor(this.output, 0, -1);
+      readline.cursorTo(this.output, 0);
+      readline.clearScreenDown(this.output);
       this.rl.cursor = match.indexOf(this.rl.line) + this.rl.line.length;
       this.rl.line = match;
       this.refreshLine();
@@ -229,14 +242,14 @@ export default class Repl {
     const suffix = this.rl.line.slice(end);
     this.rl.line = prefix + suffix;
     this.rl.cursor = prefix.length;
-    this.output.cursorTo(prefix.length);
+    readline.cursorTo(this.output, prefix.length);
   }
 
   quit() {
     if (this.mode === 'REVERSE') {
       this.mode = 'NORMAL';
-      this.output.moveCursor(0, -1);
-      this.output.cursorTo(0);
+      readline.moveCursor(this.output, 0, -1);
+      readline.cursorTo(this.output, 0);
       this.refreshLine();
     } else if (this.rl.line.length) {
       this.rl.line = '';
@@ -299,7 +312,7 @@ export default class Repl {
     this.rl.prompt();
     for await (const line of this.rl) {
       this.rl.pause();
-      this.output.clearScreenDown();
+      readline.clearScreenDown(this.output);
       await this.exec(line);
       this.rl.prompt();
     }
