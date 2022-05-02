@@ -184,14 +184,6 @@ export default class Repl {
     this.rl.cursor += string.length;
   }
 
-  removeString(beg, end) {
-    const prefix = this.rl.line.slice(0, beg);
-    const suffix = this.rl.line.slice(end);
-    this.rl.line = prefix + suffix;
-    this.rl.cursor = prefix.length;
-    this.output.cursorTo(prefix.length);
-  }
-
   quit() {
     if (this.mode === 'REVERSE') {
       this.mode = 'NORMAL';
