@@ -2,6 +2,7 @@
 
 import fs = require('fs');
 import path = require('path');
+import { dirPathCompleter } from '../lib/pathCompleter';
 
 /**
  * List the items of a given directory. Wrapper of fs.readdirSync.
@@ -15,6 +16,8 @@ const ls = (dirPath?: string): string[] => {
   const items = fs.readdirSync(p);
   return items.map((item) => path.join(p, item));
 };
+
+ls.complete = [dirPathCompleter];
 
 /**
  * List the items of a given directory and its subdirectories.
@@ -39,5 +42,8 @@ ls.recursive = (dirPath?: string): string[] => {
   };
   return walk(dirPath || '.');
 };
+
+// @ts-ignore
+ls.recursive.complete = [dirPathCompleter];
 
 export = ls;
