@@ -1,6 +1,6 @@
 {
   "name": "nacre",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Intuitive Shell",
   "main": "built/index.js",
   "license": "MIT",
