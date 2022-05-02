@@ -12,17 +12,6 @@ import highlight = require('../highlight');
 import { underlineIgnoreANSI } from '../util';
 import { Completion } from './pathCompleter';
 
-const pairs = {
-  '(': ')',
-  '[': ']',
-  '{': '}',
-  '"': '"',
-  '\'': '\'',
-  '`': '`',
-};
-
-const backspace = '\x7F';
-
 export default class Repl {
   private readonly input: any;
 
@@ -142,14 +131,6 @@ export default class Repl {
     }
   }
 
-  previousChar() {
-    return this.rl.line[this.rl.cursor - 1];
-  }
-
-  nextChar() {
-    return this.rl.line[this.rl.cursor];
-  }
-
   ttyWrite(char, key) {
     const writeKeystroke = this.handleKeystroke(char, key);
     if (writeKeystroke) {
@@ -166,27 +147,6 @@ export default class Repl {
   handleKeystroke(char, key): boolean {
     if (!(key.ctrl && key.name === 'c')) {
       this.nextCtrlCKills = false;
-    }
-
-    if (Object.keys(pairs).includes(key.sequence)) {
-      const prev = this.previousChar();
-      const next = this.nextChar();
-      const opening = key.sequence;
-      const according = pairs[key.sequence];
-      if ((prev === opening && next === according) || next !== according) {
-        this.insertString(opening + according);
-        this.rl.cursor--;
-      }
-      return false;
-    }
-
-    if (char === backspace) {
-      const prev = this.previousChar();
-      const next = this.nextChar();
-      if (Object.keys(pairs).includes(prev) && pairs[prev] === next) {
-        this.removeString(this.rl.cursor, this.rl.cursor + 1);
-      }
-      return true;
     }
 
     if (key.ctrl && key.name === 'r' && this.mode === 'NORMAL') {
