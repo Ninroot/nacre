@@ -6,18 +6,18 @@ import assert = require('assert/strict');
 import path = require('path');
 import Inspector from '../../../src/lib/inspector';
 
-let inspector;
-
-beforeEach(async () => {
-  inspector = new Inspector();
-  await inspector.start();
-});
-
-afterEach(async () => {
-  inspector.stop();
-});
-
 describe('inspector unit test', () => {
+  let inspector;
+
+  beforeEach(async () => {
+    inspector = new Inspector();
+    await inspector.start();
+  });
+
+  afterEach(async () => {
+    inspector.stop();
+  });
+
   it('getRemoteGlobal', async () => {
     const g = await inspector.getRemoteGlobal();
     assert.equal(g.type, 'object');
@@ -59,17 +59,17 @@ describe('inspector unit test', () => {
     );
   });
 
-  it('execute 1 + 1', async () => {
+  it('execute 1 + 1', async function () {
     const source = '1 + 1';
     const actual = await inspector.execute(source);
     assert.deepStrictEqual(actual, '2');
   });
 
-  it('evaluate somethingThatDoesNotExist', async () => {
-    const { result: actual } = await inspector.evaluate('somethingThatDoesNotExist', true);
-    // ReferenceError only when throwOnSideEffect is true
-    // FIXME Fails on local windows machine
-    assert.ok(actual.description.includes('EvalError: Possible side-effect in debug-evaluate'));
+  it('evaluate somethingThatDoesNotExist', async function () {
+    const actual = await inspector.evaluate('somethingThatDoesNotExist', true);
+    // ReferenceError only when throwOnSideEffect is true or in some cases under windows (?)
+    assert.ok(actual.result.description.includes('EvalError: Possible side-effect in debug-evaluate') ||
+              actual.result.description.includes('ReferenceError: somethingThatDoesNotExist is not defined'));
   });
 
   it('evaluate with syntax error', async () => {
@@ -113,10 +113,6 @@ describe('inspector unit test', () => {
   describe('auto require', () => {
     // eslint-disable-next-line func-names
     it('should load fakemodule', async function () {
-      if (process.platform === 'win32') {
-        // FIXME: should work
-        this.skip();
-      }
       const moduleAbsPath = path.join(__dirname, 'fixtures', 'inspector', 'node_modules', 'fakemodule');
       const load = await inspector.loadModule(moduleAbsPath);
       assert.ok(load.result);

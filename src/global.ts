@@ -5,6 +5,7 @@ import commands = require('./commands');
 
 global.module = module;
 global.require = require;
+global.path = require('path');
 global.util = require('util');
 
 // list of builtins to be excluded from some OS
