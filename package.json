@@ -1,6 +1,6 @@
 {
   "name": "nacre",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Intuitive Shell",
   "main": "built/index.js",
   "license": "MIT",
@@ -51,7 +51,6 @@
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "mocha": "^9.2.1",
-    "nyc": "^15.1.0",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.3"
   },

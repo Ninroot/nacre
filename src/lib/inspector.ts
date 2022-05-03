@@ -4,7 +4,6 @@ import { Runtime, Session } from 'inspector';
 
 require('../global');
 import inspector = require('inspector');
-import path = require('path');
 
 export default class Inspector {
   private session: Session;
@@ -53,16 +52,16 @@ export default class Inspector {
   }
 
   loadModule(moduleAbsPath) {
-    const moduleName = path.basename(moduleAbsPath);
-    const f = `function load(moduleName) {
+    const f = `function load(moduleAbsPath) {
       try {
-        const m = require('${moduleAbsPath}');
+        const moduleName = path.basename(moduleAbsPath);
+        const m = require(moduleAbsPath);
         if (m) {
           globalThis[moduleName] = m;
         }
       } catch (e) { }
     }`;
-    return this.callFunctionOn(f, [{ value: moduleName }]);
+    return this.callFunctionOn(f, [{ value: moduleAbsPath }]);
   }
 
   evaluate(source, throwOnSideEffect) {
