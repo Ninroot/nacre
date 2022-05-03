@@ -5,10 +5,8 @@ import { assert } from 'chai';
 
 import Repl from '../../../built/lib/repl';
 
-describe('repl unit test', function () {
-  // FIXME pipeline
-  this.skip();
-
+// FIXME pipeline
+describe.skip('repl unit test', function () {
   let repl: Repl;
 
   beforeEach(async function () {
