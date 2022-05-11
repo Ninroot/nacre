@@ -3,7 +3,7 @@
 import { describe, it } from 'mocha';
 
 import { assert } from 'chai';
-import { completeNpmPackageName, cleanDebuggerOutput, cleanNpmLog } from '../../../built/commands/helper';
+import { cleanDebuggerOutput, cleanNpmLog } from '../../../built/commands/helper';
 
 
 describe('npm unit test', () => {
@@ -52,19 +52,5 @@ npm verb exit 0
 npm timing npm Completed in 503ms
 npm info ok `;
     assert.equal(cleanNpmLog(str), 'Expected\nmessage\n');
-  });
-
-  it('completeNpmPackageName', () => {
-    // @ts-ignore
-    const [hits, line] = completeNpmPackageName('chalk');
-    assert.include(hits, 'chalk');
-    assert.deepEqual(line, 'chalk');
-  });
-
-  it('completeNpmPackageName non existing package', () => {
-    // @ts-ignore
-    const [hits, line] = completeNpmPackageName('doesNotExist');
-    assert.deepEqual(hits, []);
-    assert.deepEqual(line, 'doesNotExist');
   });
 });

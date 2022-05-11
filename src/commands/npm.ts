@@ -1,7 +1,8 @@
 'use strict';
 
 import { spawnSync } from 'child_process';
-import { cleanDebuggerOutput, cleanNpmLog, completeNpmPackageName } from './helper';
+import { cleanDebuggerOutput, cleanNpmLog } from './helper';
+import { completeNpmPackageName } from './npmCompleter';
 
 interface Npm {
   /**

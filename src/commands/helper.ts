@@ -1,5 +1,3 @@
-import { spawnSync } from 'child_process';
-
 // removes from a string the debugger node message
 export function cleanDebuggerOutput(str = ''): string {
   return (str.startsWith('Debugger listening on ws://') && str.endsWith('Waiting for the debugger to disconnect...\n'))
@@ -16,13 +14,4 @@ export function cleanNpmLog(str = ''): string {
     .split(/\r?\n/)
     .filter((line) => !/^npm (info|notice|verb|timing|http|sill|ERR|WARN)/.test(line))
     .join('\n');
-}
-
-export function completeNpmPackageName(line: string) {
-  const { stdout } = spawnSync('npm', ['search', '--json', line]);
-  const packages = JSON.parse(stdout.toString());
-  const hits = packages
-    .filter((p) => p.name.startsWith(line))
-    .map((p) => p.name);
-  return [hits, line];
 }

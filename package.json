@@ -12,6 +12,7 @@
     "build": "tsc",
     "lint": "eslint src",
     "test:unit": "mocha --require ts-node/register --recursive --extension=ts test/unit",
+    "test:integration": "mocha --require ts-node/register --recursive --extension=ts --timeout=10000 test/integration",
     "test:system": "nacre ./test/system/fixtures/main.js"
   },
   "bin": {
