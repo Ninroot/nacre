@@ -4,8 +4,8 @@ import { renameSync } from 'fs';
 import { itemPathCompleter, dirPathCompleter } from '../lib/pathCompleter';
 
 /**
- * @property oldPath - old path of the moved item
- * @property newPath - new path of the moved item
+ * @property oldPath - old path of the moved item.
+ * @property newPath - new path of the moved item.
  */
 type MovedItem = {
   oldPath: string;
@@ -14,8 +14,9 @@ type MovedItem = {
 
 /**
  * Move the item from `itemPath` to the directory `dirPath`.
- * @param itemPath - source item to be moved
- * @param dirPath - destination directory
+ * @param itemPath - source item to be moved.
+ * @param dirPath - destination directory.
+ * @return {MovedItem} - the old and the new path of the moved item.
  */
 const mv = function (itemPath: string, dirPath: string): MovedItem {
   const dirStat = stat(dirPath);
