@@ -1,12 +1,11 @@
 "use strict";
 
 import { spawnSync } from "child_process";
-import { cleanDebuggerOutput, cleanNpmLog } from "./helper";
+import { cleanDebuggerOutput, cleanNpmLog, listByName } from "./npmSdk";
 import {
   completeNpmPackageName,
   completeNpmUninstallPackageName,
 } from "./npmCompleter";
-import { npmList } from "./npmSdk";
 
 interface Npm {
   /**
@@ -45,7 +44,7 @@ interface NpmPackage {
 }
 
 function getPackageInfo(packageName: string) {
-  const list = npmList(packageName, 0);
+  const list = listByName(packageName, 0);
   // the package does not exist
   if (!list.dependencies) {
     return { name: packageName };

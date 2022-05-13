@@ -1,21 +1,4 @@
-import { spawnSync } from "child_process";
-import { npmList } from "./npmSdk";
-
-function searchPackageByName(pkgName: string) {
-  const { stdout } = spawnSync("npm", ["search", "--json", pkgName], {
-    shell: true,
-  });
-  return JSON.parse(stdout.toString());
-}
-
-function searchVersionsByName(pkgName: string): string[] {
-  const { stdout: versionBuf } = spawnSync(
-    "npm",
-    ["view", "--json", pkgName, "versions"],
-    { shell: true }
-  );
-  return JSON.parse(versionBuf.toString());
-}
+import { listByName, searchPackageByName, searchVersionsByName } from "./npmSdk";
 
 export function completeNpmPackageName(line: string): [string[], string] {
   const [pkgName, pkgVersion] = line.split("@");
@@ -38,7 +21,7 @@ export function completeNpmPackageName(line: string): [string[], string] {
 export function completeNpmUninstallPackageName(
   line: string
 ): [string[], string] {
-  const { dependencies } = npmList("");
+  const { dependencies } = listByName();
   const installedPackageNames = dependencies ? Object.keys(dependencies) : [];
   return [installedPackageNames.filter((p) => p.startsWith(line)), line];
 }
