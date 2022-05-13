@@ -3,10 +3,10 @@
 import { describe, it } from 'mocha';
 
 import { assert } from 'chai';
-import { completeNpmPackageName } from '../../../built/commands/npmCompleter';
+import { completeNpmPackageName, completeNpmUninstallPackageName } from '../../../src/commands/npmCompleter';
 
 
-describe('npm unit test', () => {
+describe('npm integration test', () => {
 
   it('completeNpmPackageName with existing package', () => {
     const [hits, line] = completeNpmPackageName('chalk');
@@ -16,7 +16,7 @@ describe('npm unit test', () => {
 
   it('completeNpmPackageName with existing package and existing version', () => {
     const [hits, line] = completeNpmPackageName('chalk@5');
-    console.log(hits, line);
+    // console.log(hits, line);
     hits.forEach((h) => assert.match(h, /chalk@[0-9]\.[0-9]\.[0-9]/));
     assert.deepEqual(line, 'chalk@5');
   });
@@ -25,5 +25,10 @@ describe('npm unit test', () => {
     const [hits, line] = completeNpmPackageName('doesNotExist');
     assert.deepEqual(hits, []);
     assert.deepEqual(line, 'doesNotExist');
+  });
+
+  it('completeNpmUninstallPackageName', () => {
+    const [hits] = completeNpmUninstallPackageName('');
+    ['mocha', 'chai'].forEach((expected) => assert.include(hits, expected));
   });
 });

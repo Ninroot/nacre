@@ -1,6 +1,6 @@
 'use strict';
 
-import { beforeEach, describe, it } from 'mocha';
+import { afterEach, beforeEach, describe, it } from 'mocha';
 
 import { assert } from 'chai';
 import cat = require('../../../src/builtins/cat');
@@ -16,6 +16,10 @@ describe('npm unit test', () => {
     const tmp = await mkdtemp(path.join(tmpdir(), 'npm-'));
     chdir(tmp);
     cat.overwrite('package.json', '{}');
+  });
+
+  afterEach('', () => {
+    chdir(__dirname);
   });
 
   it('should throw install a package that does not exist', function () {

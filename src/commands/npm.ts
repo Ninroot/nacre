@@ -2,7 +2,7 @@
 
 import { spawnSync } from 'child_process';
 import { cleanDebuggerOutput, cleanNpmLog } from './helper';
-import { completeNpmPackageName } from './npmCompleter';
+import { completeNpmPackageName, completeNpmUninstallPackageName } from './npmCompleter';
 
 interface Npm {
   /**
@@ -41,7 +41,11 @@ interface NpmPackage {
 }
 
 function getPackageInfo(packageName: string) {
-  const npmList = spawnSync('npm', ['list', '--depth=0', '--json', '--silent', packageName]);
+  const npmList = spawnSync(
+    'npm',
+    ['list', '--depth=0', '--json', '--silent', packageName],
+    { shell: true },
+  );
   const rootPack = JSON.parse(npmList.stdout.toString());
   // the package does not exist
   if (!rootPack.dependencies) {
@@ -63,6 +67,7 @@ function managePackage(action: 'install' | 'uninstall', packageName: string): Np
   const npmInstall = spawnSync(
     'npm',
     [action, '--color=false', '--json', packageName],
+    { shell: true },
   );
   const stderr = cleanDebuggerOutput(npmInstall.stderr.toString());
   if (stderr) {
@@ -92,6 +97,8 @@ install.complete = [completeNpmPackageName];
 const uninstall = (packageName: string): NpmPackage => {
   return managePackage('uninstall', packageName);
 };
+
+uninstall.complete = [completeNpmUninstallPackageName];
 
 const npm: Npm = {
   install,
