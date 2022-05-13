@@ -7,6 +7,7 @@ module.exports = {
   ],
   extends: [
     'airbnb-typescript/base',
+    'prettier', // keep prettier last to override other configs
   ],
   parserOptions: {
     project: 'tsconfig.eslint.json',

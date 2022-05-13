@@ -11,7 +11,7 @@ import { tmpdir } from 'os';
 import { chdir } from 'process';
 
 
-describe('npm unit test', () => {
+describe('npm integration test', () => {
   beforeEach('prepare fixtures directory', async () => {
     const tmp = await mkdtemp(path.join(tmpdir(), 'npm-'));
     chdir(tmp);

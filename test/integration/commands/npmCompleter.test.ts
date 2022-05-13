@@ -16,7 +16,6 @@ describe('npm integration test', () => {
 
   it('completeNpmPackageName with existing package and existing version', () => {
     const [hits, line] = completeNpmPackageName('chalk@5');
-    // console.log(hits, line);
     hits.forEach((h) => assert.match(h, /chalk@[0-9]\.[0-9]\.[0-9]/));
     assert.deepEqual(line, 'chalk@5');
   });
