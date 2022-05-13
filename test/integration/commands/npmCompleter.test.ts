@@ -1,23 +1,34 @@
-'use strict';
+"use strict";
 
-import { describe, it } from 'mocha';
+import { describe, it } from "mocha";
 
-import { assert } from 'chai';
-import { completeNpmPackageName } from '../../../built/commands/npmCompleter';
+import { assert } from "chai";
+import {
+  completeNpmPackageName,
+  completeNpmUninstallPackageName,
+} from "../../../src/commands/npmCompleter";
 
-
-describe('npm unit test', () => {
-  it('completeNpmPackageName', () => {
-    // @ts-ignore
-    const [hits, line] = completeNpmPackageName('chalk');
-    assert.include(hits, 'chalk');
-    assert.deepEqual(line, 'chalk');
+describe("npm integration test", () => {
+  it("completeNpmPackageName with existing package", () => {
+    const [hits, line] = completeNpmPackageName("chalk");
+    assert.include(hits, "chalk");
+    assert.deepEqual(line, "chalk");
   });
 
-  it('completeNpmPackageName non existing package', () => {
-    // @ts-ignore
-    const [hits, line] = completeNpmPackageName('doesNotExist');
+  it("completeNpmPackageName with existing package and existing version", () => {
+    const [hits, line] = completeNpmPackageName("chalk@5");
+    hits.forEach((h) => assert.match(h, /chalk@[0-9]\.[0-9]\.[0-9]/));
+    assert.deepEqual(line, "chalk@5");
+  });
+
+  it("completeNpmPackageName non existing package", () => {
+    const [hits, line] = completeNpmPackageName("doesNotExist");
     assert.deepEqual(hits, []);
-    assert.deepEqual(line, 'doesNotExist');
+    assert.deepEqual(line, "doesNotExist");
+  });
+
+  it("completeNpmUninstallPackageName", () => {
+    const [hits] = completeNpmUninstallPackageName("");
+    ["mocha", "chai"].forEach((expected) => assert.include(hits, expected));
   });
 });

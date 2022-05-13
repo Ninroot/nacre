@@ -1,27 +1,25 @@
-'use strict';
+"use strict";
 
-import { describe, it } from 'mocha';
+import { describe, it } from "mocha";
 
-import { assert } from 'chai';
-import { cleanDebuggerOutput, cleanNpmLog } from '../../../built/commands/helper';
+import { assert } from "chai";
+import { cleanDebuggerOutput, cleanNpmLog } from "../../../src/commands/npmSdk";
 
-
-describe('npm unit test', () => {
-
-  it('should not change the string if no debugger', () => {
-    assert.equal(cleanDebuggerOutput('hello world'), 'hello world');
+describe("npm unit test", () => {
+  it("should not change the string if no debugger", () => {
+    assert.equal(cleanDebuggerOutput("hello world"), "hello world");
   });
 
-  it('removeDebuggerOutput without output', () => {
+  it("removeDebuggerOutput without output", () => {
     const src = `Debugger listening on ws://127.0.0.1:54703/d3f8dc19-76bf-4119-8235-0dfd6f970d8a
 For help, see: https://nodejs.org/en/docs/inspector
 Debugger attached.
 Waiting for the debugger to disconnect...
 `;
-    assert.equal(cleanDebuggerOutput(src), '');
+    assert.equal(cleanDebuggerOutput(src), "");
   });
 
-  it('removeDebuggerOutput with inner output', () => {
+  it("removeDebuggerOutput with inner output", () => {
     const expect = `This is not part of the debugger.
 This also.`;
     const src = `Debugger listening on ws://127.0.0.1:54703/d3f8dc19-76bf-4119-8235-0dfd6f970d8a
@@ -33,7 +31,7 @@ Waiting for the debugger to disconnect...
     assert.equal(cleanDebuggerOutput(src), expect);
   });
 
-  it('cleanNpmLog', () => {
+  it("cleanNpmLog", () => {
     const str = `npm ERR! code E404
 npm ERR! 404 tarball, folder, http url, or git url.
 npm ERR! A complete log of this run can be found in:
@@ -51,6 +49,6 @@ message
 npm verb exit 0
 npm timing npm Completed in 503ms
 npm info ok `;
-    assert.equal(cleanNpmLog(str), 'Expected\nmessage\n');
+    assert.equal(cleanNpmLog(str), "Expected\nmessage\n");
   });
 });

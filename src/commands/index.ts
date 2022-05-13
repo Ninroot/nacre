@@ -1,7 +1,5 @@
-'use strict';
+"use strict";
 
-import npm = require('./npm');
+import npm = require("./npm");
 
-export {
-  npm,
-};
+export { npm };

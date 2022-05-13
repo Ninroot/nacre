@@ -1,8 +1,11 @@
-'use strict';
+"use strict";
 
-import { spawnSync } from 'child_process';
-import { cleanDebuggerOutput, cleanNpmLog } from './helper';
-import { completeNpmPackageName } from './npmCompleter';
+import { spawnSync } from "child_process";
+import { cleanDebuggerOutput, cleanNpmLog, listByName } from "./npmSdk";
+import {
+  completeNpmPackageName,
+  completeNpmUninstallPackageName,
+} from "./npmCompleter";
 
 interface Npm {
   /**
@@ -32,37 +35,40 @@ class NpmError extends Error {
 }
 
 interface NpmPackage {
-  name?: string,
-  version?: string,
-  resolved?: number,
-  added?: number,
-  removed?: number,
-  changed?: number,
+  name?: string;
+  version?: string;
+  resolved?: number;
+  added?: number;
+  removed?: number;
+  changed?: number;
 }
 
 function getPackageInfo(packageName: string) {
-  const npmList = spawnSync('npm', ['list', '--depth=0', '--json', '--silent', packageName]);
-  const rootPack = JSON.parse(npmList.stdout.toString());
+  const list = listByName(packageName, 0);
   // the package does not exist
-  if (!rootPack.dependencies) {
+  if (!list.dependencies) {
     return { name: packageName };
   }
   // extract name from the unique dependency
-  const name = Object.keys(rootPack.dependencies)[0];
-  const { version, resolved } = rootPack.dependencies[name];
+  const name = Object.keys(list.dependencies)[0];
+  const { version, resolved } = list.dependencies[name];
   return { name, version, resolved };
 }
 
-function managePackage(action: 'install' | 'uninstall', packageName: string): NpmPackage {
+function managePackage(
+  action: "install" | "uninstall",
+  packageName: string
+): NpmPackage {
   const pkg: NpmPackage = {};
 
-  if (action === 'uninstall') {
+  if (action === "uninstall") {
     Object.assign(pkg, getPackageInfo(packageName));
   }
 
   const npmInstall = spawnSync(
-    'npm',
-    [action, '--color=false', '--json', packageName],
+    "npm",
+    [action, "--color=false", "--json", packageName],
+    { shell: true }
   );
   const stderr = cleanDebuggerOutput(npmInstall.stderr.toString());
   if (stderr) {
@@ -76,7 +82,7 @@ function managePackage(action: 'install' | 'uninstall', packageName: string): Np
   pkg.removed = removed;
   pkg.changed = changed;
 
-  if (action === 'install') {
+  if (action === "install") {
     Object.assign(pkg, getPackageInfo(packageName));
   }
 
@@ -84,14 +90,16 @@ function managePackage(action: 'install' | 'uninstall', packageName: string): Np
 }
 
 const install = (packageName: string): NpmPackage => {
-  return managePackage('install', packageName);
+  return managePackage("install", packageName);
 };
 
 install.complete = [completeNpmPackageName];
 
 const uninstall = (packageName: string): NpmPackage => {
-  return managePackage('uninstall', packageName);
+  return managePackage("uninstall", packageName);
 };
+
+uninstall.complete = [completeNpmUninstallPackageName];
 
 const npm: Npm = {
   install,
