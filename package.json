@@ -64,7 +64,8 @@
     "chalk": "^4.0.0",
     "emphasize": "^3.0.0",
     "minimist": "^1.2.5",
-    "process": "^0.11.10"
+    "rc": "~1.2.7",
+    "resolve": "~1.7.1"
   },
   "optionalDependencies": {
     "userid": "^1.2.5"
