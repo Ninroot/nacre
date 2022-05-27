@@ -28,77 +28,96 @@ import { assert } from "chai";
 import { describe, it, before, after } from "mocha";
 import * as path from "path";
 
-import {
-  requireg,
-  resolve,
-} from "../../../../../src/builtins/lib/source/requireg";
+import * as resolvers from "../../../../../src/builtins/lib/source/resolvers";
 
 const isWin32 = process.platform === "win32";
-const homeVar = isWin32 ? "USERPROFILE" : "HOME";
-const homePath = process.env[homeVar];
 
-describe("requireg", function () {
-  it("should resolve a builtin module", function () {
-    assert.strictEqual(requireg("path"), path);
+describe("resolvers unit test", function () {
+  const expectedBeaker = path.join(
+    __dirname,
+    "fixtures",
+    "lib",
+    "node_modules",
+    "beaker",
+    "index.js"
+  );
+
+  describe("resolve builtin module", function () {
+    it("should resolve a builtin module", function () {
+      assert.strictEqual(resolvers.builtinResolve("path"), "path");
+    });
+
+    it("should return undefined when resolve a non builtin module", function () {
+      assert.isUndefined(resolvers.builtinResolve("mocha"));
+      assert.isUndefined(resolvers.builtinResolve("nonexistent"));
+    });
   });
 
-  it("should throw an Error exception when the module does not exists", function () {
-    assert.throw(() => requireg("nonexistent"));
+  describe("resolve local module", function () {
+    it("should resolve a local module", function () {
+      assert.strictEqual(
+        resolvers.localResolve(
+          "beaker",
+          path.join(__dirname, "fixtures", "lib")
+        ),
+        expectedBeaker
+      );
+    });
   });
 
-  describe("resolve via NODE_PATH", function () {
+  describe("resolve via $NODE_PATH", function () {
+    const nodePath = process.env.NODE_PATH;
+
     before(function () {
       process.env.NODE_PATH = path.join(__dirname, "fixtures", "lib");
     });
 
     after(function () {
-      process.env.NODE_PATH = "";
-    });
-
-    it("should resolve the beaker package", function () {
-      assert.isTrue(requireg("beaker"));
+      // prevent "undefined" as a string to be set in the env var
+      process.env.NODE_PATH = nodePath ? nodePath : "";
     });
 
     it("should have the expected module path", function () {
       assert.equal(
-        resolve("beaker", undefined),
-        path.join(
-          __dirname,
-          "fixtures",
-          "lib",
-          "node_modules",
-          "beaker",
-          "index.js"
-        )
+        resolvers.nodePathResolve("beaker", undefined),
+        expectedBeaker
       );
     });
   });
 
-  describe("resolve via $HOME", function () {
+  describe("resolve via $HOME / %USERPROFILE%", function () {
+    const homeVar = isWin32 ? "USERPROFILE" : "HOME";
+    const homePath = process.env[homeVar];
+
     before(function () {
       process.env[homeVar] = path.join(__dirname, "fixtures", "lib");
     });
 
     after(function () {
-      process.env[homeVar] = homePath;
+      process.env[homeVar] = homePath ? homePath : "";
     });
 
     it("should resolve the beaker package", function () {
-      assert.isTrue(requireg("beaker"));
+      assert.strictEqual(resolvers.userHomeResolve("beaker"), expectedBeaker);
     });
   });
 
   describe("resolve via $NODE_MODULES", function () {
+    const nodeModules = process.env.NODE_MODULES;
+
     before(function () {
       process.env.NODE_MODULES = path.join(__dirname, "fixtures", "lib");
     });
 
     after(function () {
-      process.env.NODE_MODULES = "";
+      process.env.NODE_MODULES = nodeModules ? nodeModules : "";
     });
 
     it("should resolve the beaker package", function () {
-      assert.isTrue(requireg("beaker"));
+      assert.strictEqual(
+        resolvers.nodeModulesResolve("beaker"),
+        expectedBeaker
+      );
     });
   });
 
@@ -119,54 +138,7 @@ describe("requireg", function () {
     });
 
     it("should resolve the beaker package", function () {
-      assert.isTrue(requireg("beaker"));
-    });
-
-    it("should have the expected module path", function () {
-      assert.equal(
-        resolve("beaker", undefined),
-        path.join(
-          __dirname,
-          "fixtures",
-          "lib",
-          "node_modules",
-          "beaker",
-          "index.js"
-        )
-      );
+      assert.strictEqual(resolvers.execPathResolve("beaker"), expectedBeaker);
     });
   });
-
-  // describe("resolve via npm prefix", function () {
-  //   var rc = require("rc");
-  //
-  //   before(function () {
-  //     resolvers.__set__("rc", function () {
-  //       return {
-  //         prefix: path.join(__dirname, "fixtures", isWin32 ? "lib" : ""),
-  //       };
-  //     });
-  //   });
-  //
-  //   after(function () {
-  //     resolvers.__set__("rc", rc);
-  //   });
-  //
-  //   it("should resolve the beaker package", function () {
-  //     expect(requireg("beaker")).to.be.true;
-  //   });
-  //
-  //   it("should have the expected module path", function () {
-  //     expect(requireg.resolve("beaker")).to.be.equal(
-  //       path.join(
-  //         __dirname,
-  //         "fixtures",
-  //         "lib",
-  //         "node_modules",
-  //         "beaker",
-  //         "index.js"
-  //       )
-  //     );
-  //   });
-  // });
 });

@@ -1,4 +1,4 @@
-import { cd, source } from "../../../src/builtins";
+import { source } from "../../../src/builtins";
 import { assert } from "chai";
 import { before, describe, it } from "mocha";
 import * as path from "path";
@@ -6,7 +6,7 @@ import * as path from "path";
 describe("source unit test", function () {
   describe("current working directory dependent import", function () {
     before("change current directory", function () {
-      cd(path.join(__dirname, "fixtures", "source"));
+      process.chdir(path.join(__dirname, "fixtures", "source"));
     });
 
     it("should resolve a local module", function () {
@@ -17,7 +17,7 @@ describe("source unit test", function () {
 
   describe("nested current working directory dependent import", function () {
     before("change current directory", function () {
-      cd(
+      process.chdir(
         path.join(
           __dirname,
           "fixtures",
