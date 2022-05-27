@@ -148,13 +148,8 @@ export default class Completer {
   }
 
   async loadModule(moduleName) {
-    const localModulePath = path.resolve(process.cwd(), 'node_modules', moduleName);
-    const { result: localModule } = await this.runner.loadModule(localModulePath);
-    if (localModule.type === 'object') {
-      return true;
-    }
-    const { result: globalModule } = await this.runner.loadModule(moduleName);
-    return globalModule.type === 'object';
+    const { result: localModule } = await this.runner.loadModule(moduleName);
+    return localModule.type === 'object';
   }
 
   async completeProperties(node, source, cursor) {

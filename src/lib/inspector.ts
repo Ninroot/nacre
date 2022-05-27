@@ -51,17 +51,17 @@ export default class Inspector {
     ]).then((r) => r.flat());
   }
 
-  loadModule(moduleAbsPath) {
-    const f = `function load(moduleAbsPath) {
+  loadModule(modulePath) {
+    const f = `function load(modulePath) {
       try {
-        const moduleName = path.basename(moduleAbsPath);
-        const m = require(moduleAbsPath);
+        const moduleName = path.basename(modulePath);
+        const m = source(modulePath);
         if (m) {
           globalThis[moduleName] = m;
         }
-      } catch (e) { }
+      } catch (e) { globalThis[moduleName] = e }
     }`;
-    return this.callFunctionOn(f, [{ value: moduleAbsPath }]);
+    return this.callFunctionOn(f, [{ value: modulePath }]);
   }
 
   evaluate(source, throwOnSideEffect) {
