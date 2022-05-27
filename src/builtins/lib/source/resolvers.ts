@@ -47,8 +47,11 @@ export function builtinResolve(module) {
 // if NODE_PATH is defined, a global module should be natively resolved
 export function localResolve(module, dirname) {
   try {
-    const localPath = path.resolve(dirname, "node_modules", module);
-    return require.resolve(localPath);
+    // resolve file
+    return require.resolve(path.resolve(dirname, module));
+  } catch (e) {}
+  try {
+    return require.resolve(path.resolve(dirname, "node_modules", module));
   } catch (e) {}
 }
 
