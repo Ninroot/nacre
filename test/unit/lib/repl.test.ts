@@ -10,7 +10,7 @@ describe.skip("repl unit test", function () {
   let repl: Repl;
 
   beforeEach(async function () {
-    repl = new Repl(process.stdin, process.stdout, ">");
+    repl = new Repl(process.stdin, process.stdout);
     await repl.init();
   });
 
