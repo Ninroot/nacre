@@ -1,13 +1,10 @@
 #!/usr/bin/env node
 
-'use strict';
+import minimist = require("minimist");
+import path = require("path");
 
-import process = require('node:process');
-import minimist = require('minimist');
-import path = require('path');
-
-import Inspector from './lib/inspector';
-import Repl from './lib/repl';
+import Inspector from "./lib/inspector";
+import Repl from "./lib/repl";
 
 const args = minimist(process.argv.slice(2));
 
@@ -31,7 +28,7 @@ function printUsage() {
 }
 
 if (args.version || args.v) {
-  const { version } = require('../package.json');
+  const { version } = require("../package.json");
   process.stdout.write(version);
   process.exit(0);
 }
@@ -48,8 +45,10 @@ async function handle(line) {
   process.stdout.write(`${result}\n`);
 }
 
-if ((args.evaluate && typeof args.evaluate === 'string')
-  || (args.e && typeof args.e === 'string')) {
+if (
+  (args.evaluate && typeof args.evaluate === "string") ||
+  (args.e && typeof args.e === "string")
+) {
   const line = args.evaluate ? args.evaluate : args.e;
   handle(line)
     .then(() => process.exit(0))
@@ -58,13 +57,13 @@ if ((args.evaluate && typeof args.evaluate === 'string')
 
 // REPL
 if (args._.length === 0) {
-  const repl = new Repl(process.stdin, process.stdout, '> ');
+  const repl = new Repl(process.stdin, process.stdout);
   repl.start();
 }
 
 // Script
 if (args._.length === 1) {
-  require('./global');
+  require("./global");
   const firstArg = args._[0];
   const filepath = path.resolve(firstArg);
   require(filepath);
