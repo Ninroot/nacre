@@ -10,6 +10,7 @@ import highlight = require("../highlight");
 import { underlineIgnoreANSI } from "../util";
 import { Completion } from "./pathCompleter";
 import * as path from "path";
+import { completeEnd } from "./stringUtil";
 
 const pairs = {
   "(": ")",
@@ -132,17 +133,23 @@ export default class Repl {
           if (this.rl.line !== inspectedLine) {
             return;
           }
-          if (context && context.signature) {
+          if (context) {
+            let fill = "";
+            if (context.signature) {
+              fill = context.signature;
+            } else if (context.completion) {
+              const completion = context.completion[0][0];
+              fill = completeEnd(inspectedLine, completion);
+            }
             readline.cursorTo(
               this.output,
               this.rl.getPrompt().length + this.rl.line.length
             );
-            this.output.write(chalk.grey(context.signature));
+            this.output.write(chalk.grey(fill));
           }
           if (preview) {
-            this.output.write(
-              `\n${chalk.grey(preview.slice(0, this.output.columns - 1))}`
-            );
+            const truncatedPreview = preview.slice(0, this.output.columns - 1);
+            this.output.write(`\n${chalk.grey(truncatedPreview)}`);
             readline.moveCursor(this.output, 0, -1);
           }
           if (context || preview) {

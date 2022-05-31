@@ -2,7 +2,6 @@
 
 import acorn = require('acorn-loose');
 import walk = require('acorn-walk');
-import path = require('./path');
 import Inspector from './inspector';
 import { Completion, itemPathCompleter } from './pathCompleter';
 
