@@ -85,7 +85,7 @@ export default class Inspector {
     });
   }
 
-  async execute(line) {
+  async execute(line): Promise<string> {
     const {
       result,
       exceptionDetails,
@@ -94,12 +94,7 @@ export default class Inspector {
 
     const { result: inspected } = await this.callFunctionOn(
       `function inspect(v) {
-        return util.inspect(v, {
-          depth: Infinity,
-          colors: false,
-          showProxy: true,
-          maxArrayLength: Infinity,
-        });
+        return JSON.stringify(v);
       }`,
       [result],
     );

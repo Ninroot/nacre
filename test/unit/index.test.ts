@@ -41,4 +41,9 @@ describe("index unit test", () => {
     const actual = await run("--evaluate", "1+1");
     assert.ok(actual.stdout.includes("2"), `Should be ${actual.stdout}`);
   });
+
+  it("--evaluate stat('.')", async () => {
+    const actual = await run("--evaluate", "stat('.')");
+    assert.ok(actual.stdout.includes("\"type\":\"directory\""), `Should be ${actual.stdout}`);
+  });
 });
