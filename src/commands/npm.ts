@@ -71,13 +71,8 @@ function managePackage(
     { shell: true }
   );
 
-  console.log(spawnSync("npm", ["config", "list"], { shell: true }).stdout.toString());
-  console.log(spawnSync("npm", ["config", "list", "-l"], { shell: true }).stdout.toString());
-
-
   const stderr = cleanDebuggerOutput(npmCommand.stderr.toString());
   if (stderr) {
-    console.log({stderr});
     const { error } = JSON.parse(cleanNpmLog(stderr));
     throw new NpmError(error.summary, error.code, error.detail);
   }
