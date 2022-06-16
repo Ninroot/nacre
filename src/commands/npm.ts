@@ -72,6 +72,7 @@ function managePackage(
   );
   const stderr = cleanDebuggerOutput(npmInstall.stderr.toString());
   if (stderr) {
+    console.log({stderr});
     const { error } = JSON.parse(cleanNpmLog(stderr));
     throw new NpmError(error.summary, error.code, error.detail);
   }
