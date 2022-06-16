@@ -1,4 +1,14 @@
-import {resolve} from './lib/source/resolvers';
+import {resolve as r} from './lib/source/resolvers';
+
+/**
+ * @description - Use the internal source mechanism to look up the location of the given module, but rather than loading
+ * the module, it just returns the resolved filepath.
+ * @param moduleName - Name of the module to be resolved.
+ * @return - filepath of the found module.
+ */
+const resolve = function (moduleName): string {
+  return r(moduleName, process.cwd());
+}
 
 /**
  * @description - Reads and executes the content of a JavaScript file or JavaScript module. It uses `require` under the hood without cache with a custom resolution.
@@ -13,12 +23,14 @@ import {resolve} from './lib/source/resolvers';
  * @return - Exported module content.
  */
 const source = function (moduleName) {
-  const resolvedModule = resolve(moduleName, process.cwd());
+  const resolvedModule = resolve(moduleName);
   delete require.cache[resolvedModule];
   if (resolvedModule === undefined) {
     throw Error(`Cannot find module ${moduleName}.`);
   }
   return require(resolvedModule);
 };
+
+source.resolve = resolve;
 
 export = source;
