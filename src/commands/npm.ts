@@ -65,18 +65,19 @@ function managePackage(
     Object.assign(pkg, getPackageInfo(packageName));
   }
 
-  const npmInstall = spawnSync(
+  const npmCommand = spawnSync(
     "npm",
     [action, "--color=false", "--json", packageName],
     { shell: true }
   );
-  const stderr = cleanDebuggerOutput(npmInstall.stderr.toString());
+
+  const stderr = cleanDebuggerOutput(npmCommand.stderr.toString());
   if (stderr) {
     const { error } = JSON.parse(cleanNpmLog(stderr));
     throw new NpmError(error.summary, error.code, error.detail);
   }
 
-  const { added, removed, changed } = JSON.parse(npmInstall.stdout.toString());
+  const { added, removed, changed } = JSON.parse(npmCommand.stdout.toString());
 
   pkg.added = added;
   pkg.removed = removed;

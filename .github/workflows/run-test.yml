@@ -5,7 +5,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-20.04, macos-11, windows-2022]
-        node: ['17']
+        node: ['18']
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -16,5 +16,5 @@ jobs:
       - run: npm run build
       - run: npm run test:unit
       - run: npm run test:integration
-      - run: npm install --global .
+      - run: npm install --location=global .
       - run: npm run test:system
