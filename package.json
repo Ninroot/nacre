@@ -20,6 +20,7 @@
   },
   "files": [
     "built",
+    "src",
     "README.md",
     "LICENSE"
   ],
