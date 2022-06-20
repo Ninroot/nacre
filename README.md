@@ -18,6 +18,8 @@ The [auto-require](https://nacre.sh/getting-started#auto-require) mechanism impo
 
 ## Installation
 
+Nacre relies on NodeJS version 18, so you must have it installed on your system. Follow their [installation instructions](https://nodejs.org/). Once this is done, install it using:
+
 ```bash
 npm install -g nacre
 ```
