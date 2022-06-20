@@ -66,7 +66,7 @@
     "acorn-loose": "^7.0.0",
     "acorn-walk": "^8.2.0",
     "chalk": "^4.0.0",
-    "emphasize": "^3.0.0",
+    "emphasize": "^4.2.0",
     "minimist": "^1.2.5",
     "rc": "~1.2.7",
     "resolve": "~1.7.1"
