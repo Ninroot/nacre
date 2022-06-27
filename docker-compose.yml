@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  nacre-local:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    image: nacresh/nacre:local
+    container_name: nacre-local
+    entrypoint:
+      - "sleep"
+      - "10000"
+    volumes:
+       - ./src/samples:/scripts
+  nacre-prod:
+    build: .
+    image: nacresh/nacre:prod
+    container_name: nacre-prod
+    entrypoint:
+      - "sleep"
+      - "10000"
+    volumes:
+       - ./src/samples:/scripts
