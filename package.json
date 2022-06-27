@@ -14,6 +14,7 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
     "test:unit": "mocha --require ts-node/register --recursive --extension=ts test/unit",
     "test:integration": "mocha --require ts-node/register --recursive --extension=ts --timeout=20000 test/integration",
     "test:system": "nacre ./test/system/fixtures/main.js"

@@ -2,8 +2,11 @@
 
 export default class CommandFailedError extends Error {
   private status: string;
+
   private signal: string;
+
   private stdout: string;
+
   private stderr: string;
 
   constructor(error) {
